@@ -68,6 +68,9 @@ body{
     font-weight: bold;
     border-radius: 0.25rem;
     transition: 100ms all ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .controller-button:hover,
@@ -85,6 +88,25 @@ body{
 .controller-right{
     grid-column: 3 / 4;
     grid-row: 2 / 4;
+}
+
+#manipulation-translation::after,
+#manipulation-rotation::after{
+    content: "";
+    position: relative;
+}
+
+#manipulation-translation:checked::after,
+#manipulation-rotation:checked::after{
+    content: "";
+    width: 8px;
+    height: 8px;
+    background-color: #EB4034;
+    position: relative;
+    border-radius: 50%;
+    display: inline-block;
+    bottom: 8.4px;
+    left: 2px;
 }
 
 #main-canvas{

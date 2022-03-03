@@ -13,21 +13,29 @@
 		<h1>3D Object Simulator</h1>
 		<canvas id="main-canvas"></canvas>
 
+		<div class="manipulation-methods">
+			<input type="radio" name="manipulation-method" id="manipulation-translation" value="translation" checked="true">
+			<label for="manipulation-translation">Translate</label>
+
+			<input type="radio" name="manipulation-method" id="manipulation-rotation" value="rotation">
+			<label for="manipulation-rotation">Rotate</label>
+		</div>
+
 		<div class="main-controller">
 			<div class="object-controller">
 				<p>Object 1</p>
-				<button class="controller-button controller-left">a</button>
-				<button class="controller-button controller-up">w</button>
-				<button class="controller-button controller-down">s</button>
-				<button class="controller-button controller-right">d</button>
+				<button class="controller-button controller-left" id="button-a">a</button>
+				<button class="controller-button controller-up" id="button-w">w</button>
+				<button class="controller-button controller-down" id="button-s">s</button>
+				<button class="controller-button controller-right" id="button-d">d</button>
 			</div>
 
 			<div class="object-controller">
 				<p>Object 2</p>
-				<button class="controller-button controller-left">j</button>
-				<button class="controller-button controller-up">i</button>
-				<button class="controller-button controller-down">k</button>
-				<button class="controller-button controller-right">l</button>
+				<button class="controller-button controller-left" id="button-j">j</button>
+				<button class="controller-button controller-up" id="button-i">i</button>
+				<button class="controller-button controller-down" id="button-k">k</button>
+				<button class="controller-button controller-right" id="button-l">l</button>
 			</div>
 		</div>
 
