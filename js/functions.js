@@ -1,6 +1,10 @@
 import Matrix from "./classes/Matrix.js"
 import Point from "./classes/Point.js"
 
+export const clearCanvas = (context, canvas) => {
+    context.clearRect(0, 0, canvas.width, canvas.height)
+}
+
 export const drawLine = (context, point1, point2, color="white") => {
 
     context.beginPath()
@@ -51,4 +55,16 @@ export const multMatrix4x4 = (matrix1, matrix2) => {
 
     return resultMatrix
 
+}
+
+export const degToRad = (deg) => {
+    return deg * 3.14 / 180
+}
+
+export const findCos = (deg) => {
+    return Math.cos(degToRad(deg))
+}
+
+export const findSin = (deg) => {
+    return Math.sin(degToRad(deg))
 }

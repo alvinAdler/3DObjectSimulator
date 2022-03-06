@@ -3,11 +3,22 @@ import Edge from './classes/Edge.js'
 import Matrix from './classes/Matrix.js'
 import Pyramid from './classes/Pyramid.js'
 
-import { drawLine, transformPoint, multMatrix4x4 } from './functions.js'
+import { clearCanvas, findCos, findSin, degToRad } from './functions.js'
+
+const TRANSLATE_X = 0.05
+const TRANSLATE_Y = 0.05
+
+const ELEV_DEG = 0
+const DIR_DEG = 0
+
+const ROT_DEG = 1
 
 window.onload = () => {
     const mainCanvas = document.querySelector("#main-canvas")
     const context = mainCanvas.getContext("2d")
+    let manipulationSelections = document.querySelectorAll("input[name='manipulation-method']")
+    let manipulationMethod = document.querySelector("input[name='manipulation-method']:checked").value
+
     mainCanvas.width = mainCanvas.offsetWidth
     mainCanvas.height = mainCanvas.offsetHeight
 
@@ -26,16 +37,26 @@ window.onload = () => {
     let pyramid1_listOfVertices = [pyramid1_v0, pyramid1_v1, pyramid1_v2, pyramid1_v3]
     let pyramid1_listOfEdges = [pyramid1_e0, pyramid1_e1, pyramid1_e2, pyramid1_e3, pyramid1_e4, pyramid1_e5]
 
-    let pyramid1 = new Pyramid(pyramid1_listOfVertices, pyramid1_listOfEdges)
+    let pyramid1 = new Pyramid(mainCanvas, context, pyramid1_listOfVertices, pyramid1_listOfEdges)
 
     let wt = new Matrix([[1, 0, 0, 0], 
                         [0, 1, 0, 0],
                         [0, 0, 1, 0],
                         [0, 0, 0, 1]])
 
-    let vt = new Matrix([[1, 0, 0, 0],
-                        [0, 1, 0, 0],
-                        [0, 0, 0, 0],
+    // let vt = new Matrix([[1, 0, 0, 0],
+    //                     [0, 1, 0, 0],
+    //                     [0, 0, 0, 0],
+    //                     [0, 0, 0, 1]])
+
+    // let vt = new Matrix([[1, 0, 0, 0],
+    //                     [0, 1, 0, 0],
+    //                     [0, 0, 1, -0.2],
+    //                     [0, 0, 0, 1]])
+
+    let vt = new Matrix([[Math.cos(degToRad(DIR_DEG)), Math.sin(degToRad(DIR_DEG)) * Math.sin(degToRad(ELEV_DEG)), 0, 0],
+                        [0, Math.cos(degToRad(ELEV_DEG)), 0, 0],
+                        [Math.sin(degToRad(DIR_DEG)), -(Math.cos(degToRad(DIR_DEG))) * Math.sin(degToRad(ELEV_DEG)), 0, 0],
                         [0, 0, 0, 1]])
     
     //* Small world
@@ -51,48 +72,120 @@ window.onload = () => {
                         [700, 350, 0, 1]])
 
     
-    for(let index=0; index < pyramid1.vertices.length; index++){
-        pyramid1.addVerticesWorld(transformPoint(pyramid1.vertices[index], wt))
-        pyramid1.addVerticesView(transformPoint(pyramid1.verticesWorld[index], vt))
-        pyramid1.addVerticesScreen(transformPoint(pyramid1.verticesView[index], st))
-    }
+    pyramid1.initPyramid(wt, vt, st)
 
-
-    for(let index=3; index < pyramid1.edges.length; index++){
-        drawLine(context, pyramid1.verticesScreen[pyramid1.edges[index].indexStart], pyramid1.verticesScreen[pyramid1.edges[index].indexEnd])
-    }
+    window.addEventListener("keydown", (ev) => {
+        const key = document.querySelector(`#button-${ev.key}`)
     
-    for(let index=0; index < 3; index++){
-        drawLine(context, pyramid1.verticesScreen[pyramid1.edges[index].indexStart], pyramid1.verticesScreen[pyramid1.edges[index].indexEnd], "#2285e4")
+        if(!key){
+            return
+        }
+
+        clearCanvas(context, mainCanvas)
+    
+        key.style.backgroundColor = "white"
+        key.style.color = "#EB4034"
+
+        console.log(ev.key)
+
+        switch(manipulationMethod){
+            case "translation":
+                switch(ev.key){
+                    case "a":
+                        wt.setRow(3, [-TRANSLATE_X, 0, 0, 1])
+                        pyramid1.drawPyramid(wt, vt, st)
+                        break;
+                    case "w":
+                        wt.setRow(3, [0, TRANSLATE_Y, 0, 1])
+                        pyramid1.drawPyramid(wt, vt, st)
+                        break;
+                    case "s":
+                        wt.setRow(3, [0, -TRANSLATE_Y, 0, 1])
+                        pyramid1.drawPyramid(wt, vt, st)
+                        break;
+                    case "d":
+                        wt.setRow(3, [TRANSLATE_X, 0, 0, 1])
+                        pyramid1.drawPyramid(wt, vt, st)
+                        break;
+                    case "j":
+                        break;
+                    case "i":
+                        break;
+                    case "k":
+                        break;
+                    case "l":
+                        break;    
+                }
+                break;
+            case "rotation":
+                switch(ev.key){
+                    case "a":
+                        wt.setMatrix([[findCos(ROT_DEG), 0, -findSin(ROT_DEG), 0],
+                                    [0, 1, 0, 0],
+                                    [findSin(ROT_DEG), 0, findCos(ROT_DEG), 0],
+                                    [0, 0, 0, 1]])
+                        pyramid1.drawPyramid(wt, vt, st)
+                        break;
+
+                        case "w":
+                            wt.setMatrix([[1, 0, 0, 0],
+                                [0, findCos(ROT_DEG), findSin(ROT_DEG), 0],
+                                [0, -findSin(ROT_DEG), findCos(ROT_DEG)],
+                                    [0, 0, 0, 1]])
+
+                        pyramid1.drawPyramid(wt, vt, st)
+                        break;
+
+                    case "s":
+                        wt.setMatrix([[1, 0, 0, 0],
+                            [0, findCos(-ROT_DEG), findSin(-ROT_DEG), 0],
+                            [0, -findSin(-ROT_DEG), findCos(-ROT_DEG)],
+                            [0, 0, 0, 1]])
+
+                        pyramid1.drawPyramid(wt, vt, st)
+                        break;
+
+                    case "d":
+                        wt.setMatrix([[findCos(-ROT_DEG), 0, -findSin(-ROT_DEG), 0],
+                                    [0, 1, 0, 0],
+                                    [findSin(-ROT_DEG), 0, findCos(-ROT_DEG), 0],
+                                    [0, 0, 0, 1]])
+                        pyramid1.drawPyramid(wt, vt, st)
+                        break;
+
+                    case "j":
+                        break;
+                    case "i":
+                        break;
+                    case "k":
+                        break;
+                    case "l":
+                        break;    
+                }
+                break;
+            default:
+                console.error("Unrecognized manipulation method")
+        }
+
+    })
+    
+    window.addEventListener("keyup", (ev) => {
+    
+        const key = document.querySelector(`#button-${ev.key}`)
+    
+        if(!key){
+            return
+        }
+        
+        key.style.backgroundColor = "#EB4034"
+        key.style.color = "white"
+    })
+
+    const handleChangeManipulation = (ev) => {
+        manipulationMethod = ev.target.value
     }
 
-    // drawLine(context, {x: 612.5, y: 350}, {x: 787.5, y: 350}, "#EB4034")
-
-    // drawLine(context, {x: 612.5, y: 262.5}, {x: 787.5, y: 262.5}, "yellow")
-    // drawLine(context, {x: 787.5, y: 262.5}, {x: 787.5, y: 437.5}, "yellow")
-    // drawLine(context, {x: 787.5, y: 437.5}, {x: 612.5, y: 437.5}, "yellow")
-    // drawLine(context, {x: 612.5, y: 437.5}, {x: 612.5, y: 262.5}, "yellow")
+    for(let radioButton of manipulationSelections){
+        radioButton.addEventListener("change", (ev) => handleChangeManipulation(ev))
+    }
 }
-
-window.addEventListener("keydown", (ev) => {
-    const key = document.querySelector(`#button-${ev.key}`)
-
-    if(!key){
-        return
-    }
-
-    key.style.backgroundColor = "white"
-    key.style.color = "#EB4034"
-})
-
-window.addEventListener("keyup", (ev) => {
-
-    const key = document.querySelector(`#button-${ev.key}`)
-
-    if(!key){
-        return
-    }
-    
-    key.style.backgroundColor = "#EB4034"
-    key.style.color = "white"
-})

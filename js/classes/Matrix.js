@@ -21,6 +21,10 @@ class Matrix{
         this.row_length = newMatrix.length
         this.col_length = newMatrix[0] ? newMatrix[0].length : 0
     }
+
+    setCell(row, col, val){
+        this.matrix[row][col] = val
+    }
 }
 
 export default Matrix

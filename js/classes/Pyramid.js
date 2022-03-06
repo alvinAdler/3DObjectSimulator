@@ -1,23 +1,68 @@
+import { drawLine, transformPoint } from "../functions.js"
+
 class Pyramid{
-    constructor(listOfVertices=[], listOfEdges=[]){
+    constructor(canvas, context, listOfVertices=[], listOfEdges=[]){
+
+        this.canvas = canvas
+        this.context = context
+
         this.vertices = listOfVertices
         this.edges = listOfEdges
 
         this.verticesWorld = []
         this.verticesView = []
         this.verticesScreen = []
+
+        this.rot_deg = 1
     }
 
-    addVerticesWorld(point){
-        this.verticesWorld.push(point)
+    addVerticesWorld(index, point){
+        // this.verticesWorld.push(point)
+        this.verticesWorld[index] = point
     }
 
-    addVerticesView(point){
-        this.verticesView.push(point)
+    addVerticesView(index, point){
+        // this.verticesView.push(point)
+        this.verticesView[index] = point
     }
 
-    addVerticesScreen(point){
-        this.verticesScreen.push(point)
+    addVerticesScreen(index, point){
+        // this.verticesScreen.push(point)
+        this.verticesScreen[index] = point
+    }
+
+    drawPyramid(wt, vt, st){
+        for(let index=0; index < this.vertices.length; index++){
+            this.addVerticesWorld(index, transformPoint(this.verticesWorld[index], wt))
+            this.addVerticesView(index, transformPoint(this.verticesWorld[index], vt))
+            this.addVerticesScreen(index, transformPoint(this.verticesView[index], st))
+        }
+    
+    
+        for(let index=3; index < this.edges.length; index++){
+            drawLine(this.context, this.verticesScreen[this.edges[index].indexStart], this.verticesScreen[this.edges[index].indexEnd])
+        }
+        
+        for(let index=0; index < 3; index++){
+            drawLine(this.context, this.verticesScreen[this.edges[index].indexStart], this.verticesScreen[this.edges[index].indexEnd], "#2285e4")
+        }
+    }
+
+    initPyramid(wt, vt, st){
+        for(let index=0; index < this.vertices.length; index++){
+            this.addVerticesWorld(index, transformPoint(this.vertices[index], wt))
+            this.addVerticesView(index, transformPoint(this.verticesWorld[index], vt))
+            this.addVerticesScreen(index, transformPoint(this.verticesView[index], st))
+        }
+    
+    
+        for(let index=3; index < this.edges.length; index++){
+            drawLine(this.context, this.verticesScreen[this.edges[index].indexStart], this.verticesScreen[this.edges[index].indexEnd])
+        }
+        
+        for(let index=0; index < 3; index++){
+            drawLine(this.context, this.verticesScreen[this.edges[index].indexStart], this.verticesScreen[this.edges[index].indexEnd], "#2285e4")
+        }
     }
 }
 
