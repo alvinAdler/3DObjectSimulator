@@ -30,7 +30,11 @@ export const transformPoint = (point, matrix) => {
         multResultArr.push(temp)
     }
 
-    resultPoint.setPoint(multResultArr[0], multResultArr[1], multResultArr[2])
+    resultPoint.setPoint(multResultArr[0], multResultArr[1], multResultArr[2], multResultArr[3])
+
+    if(resultPoint.w !== 1){
+        resultPoint.normalizeW()
+    }
 
     return resultPoint
 

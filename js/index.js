@@ -61,19 +61,9 @@ window.onload = () => {
                         [0, 0, 1, 0],
                         [0, 0, 0, 1]])
 
-    // let vt = new Matrix([[1, 0, 0, 0],
-    //                     [0, 1, 0, 0],
-    //                     [0, 0, 0, 0],
-    //                     [0, 0, 0, 1]])
-
-    // let vt = new Matrix([[1, 0, 0, 0],
-    //                     [0, 1, 0, 0],
-    //                     [0, 0, 1, -0.2],
-    //                     [0, 0, 0, 1]])
-
-    let vt = new Matrix([[Math.cos(degToRad(DIR_DEG)), Math.sin(degToRad(DIR_DEG)) * Math.sin(degToRad(ELEV_DEG)), 0, 0],
-                        [0, Math.cos(degToRad(ELEV_DEG)), 0, 0],
-                        [Math.sin(degToRad(DIR_DEG)), -(Math.cos(degToRad(DIR_DEG))) * Math.sin(degToRad(ELEV_DEG)), 0, 0],
+    let vt = new Matrix([[1, 0, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 0, -0.2],
                         [0, 0, 0, 1]])
 
                         
@@ -94,8 +84,6 @@ window.onload = () => {
         }
 
         clearCanvas(context, mainCanvas)
-
-        console.log("I am executed")
     
         key.style.backgroundColor = "white"
         key.style.color = "#EB4034"
@@ -161,6 +149,7 @@ window.onload = () => {
             case "rotation":
 
                 if(CONTROLLER_KEYS.slice(0, 6).includes(ev.key)){
+                    console.log("I am in rotation object 1")
                     switch(ev.key){
                         case "a":
                             wt.setMatrix([[findCos(ROT_DEG), 0, -findSin(ROT_DEG), 0],
@@ -171,15 +160,15 @@ window.onload = () => {
 
                         case "w":
                             wt.setMatrix([[1, 0, 0, 0],
-                                        [0, findCos(ROT_DEG), findSin(ROT_DEG), 0],
-                                        [0, -findSin(ROT_DEG), findCos(ROT_DEG)],
+                                        [0, findCos(-ROT_DEG), findSin(-ROT_DEG), 0],
+                                        [0, -findSin(-ROT_DEG), findCos(-ROT_DEG), 0],
                                         [0, 0, 0, 1]])
                             break;
 
                         case "s":
                             wt.setMatrix([[1, 0, 0, 0],
-                                        [0, findCos(-ROT_DEG), findSin(-ROT_DEG), 0],
-                                        [0, -findSin(-ROT_DEG), findCos(-ROT_DEG)],
+                                        [0, findCos(ROT_DEG), findSin(ROT_DEG), 0],
+                                        [0, -findSin(ROT_DEG), findCos(ROT_DEG), 0],
                                         [0, 0, 0, 1]])
                             break;
 
@@ -192,16 +181,16 @@ window.onload = () => {
 
                         case "q":
 
-                            wt.setMatrix([[findCos(-ROT_DEG), findSin(-ROT_DEG), 0, 0],
-                                        [-findSin(-ROT_DEG), findCos(-ROT_DEG), 0, 0],
+                            wt.setMatrix([[findCos(ROT_DEG), findSin(ROT_DEG), 0, 0],
+                                        [-findSin(ROT_DEG), findCos(ROT_DEG), 0, 0],
                                         [0, 0, 1, 0],
                                         [0, 0, 0, 1]])
 
                             break;
 
                         case "e":
-                            wt.setMatrix([[findCos(ROT_DEG), findSin(ROT_DEG), 0, 0],
-                                        [-findSin(ROT_DEG), findCos(ROT_DEG), 0, 0],
+                            wt.setMatrix([[findCos(-ROT_DEG), findSin(-ROT_DEG), 0, 0],
+                                        [-findSin(-ROT_DEG), findCos(-ROT_DEG), 0, 0],
                                         [0, 0, 1, 0],
                                         [0, 0, 0, 1]])
                             break;
@@ -222,15 +211,15 @@ window.onload = () => {
 
                         case "i":
                             wt.setMatrix([[1, 0, 0, 0],
-                                        [0, findCos(ROT_DEG), findSin(ROT_DEG), 0],
-                                        [0, -findSin(ROT_DEG), findCos(ROT_DEG)],
+                                        [0, findCos(-ROT_DEG), findSin(-ROT_DEG), 0],
+                                        [0, -findSin(-ROT_DEG), findCos(-ROT_DEG), 0],
                                         [0, 0, 0, 1]])
                             break;
 
                         case "k":
                             wt.setMatrix([[1, 0, 0, 0],
-                                        [0, findCos(-ROT_DEG), findSin(-ROT_DEG), 0],
-                                        [0, -findSin(-ROT_DEG), findCos(-ROT_DEG)],
+                                        [0, findCos(ROT_DEG), findSin(ROT_DEG), 0],
+                                        [0, -findSin(ROT_DEG), findCos(ROT_DEG), 0],
                                         [0, 0, 0, 1]])
                             break;
 
@@ -243,16 +232,16 @@ window.onload = () => {
 
                         case "u":
 
-                            wt.setMatrix([[findCos(-ROT_DEG), findSin(-ROT_DEG), 0, 0],
-                                        [-findSin(-ROT_DEG), findCos(-ROT_DEG), 0, 0],
+                            wt.setMatrix([[findCos(ROT_DEG), findSin(ROT_DEG), 0, 0],
+                                        [-findSin(ROT_DEG), findCos(ROT_DEG), 0, 0],
                                         [0, 0, 1, 0],
                                         [0, 0, 0, 1]])
 
                             break;
 
                         case "o":
-                            wt.setMatrix([[findCos(ROT_DEG), findSin(ROT_DEG), 0, 0],
-                                        [-findSin(ROT_DEG), findCos(ROT_DEG), 0, 0],
+                            wt.setMatrix([[findCos(-ROT_DEG), findSin(-ROT_DEG), 0, 0],
+                                        [-findSin(-ROT_DEG), findCos(-ROT_DEG), 0, 0],
                                         [0, 0, 1, 0],
                                         [0, 0, 0, 1]])
                             break; 
