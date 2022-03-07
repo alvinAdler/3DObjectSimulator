@@ -3,7 +3,7 @@ import Edge from './classes/Edge.js'
 import Matrix from './classes/Matrix.js'
 import Pyramid from './classes/Pyramid.js'
 
-import { clearCanvas, findCos, findSin, degToRad } from './functions.js'
+import { clearCanvas, findCos, findSin, findCentroid, findRotationMatrix } from './functions.js'
 
 const TRANSLATE = 0.05
 
@@ -26,7 +26,6 @@ window.onload = () => {
     const context = mainCanvas.getContext("2d")
     let manipulationSelections = document.querySelectorAll("input[name='manipulation-method']")
     let manipulationMethod = document.querySelector("input[name='manipulation-method']:checked").value
-    const listOfPyramids = []
 
     mainCanvas.width = mainCanvas.offsetWidth
     mainCanvas.height = mainCanvas.offsetHeight
@@ -94,22 +93,52 @@ window.onload = () => {
                 if(CONTROLLER_KEYS.slice(0, 6).includes(ev.key)){
                     switch(ev.key){
                         case "a":
-                            wt.setRow(3, [-TRANSLATE, 0, 0, 1])
+                            wt.setMatrix([
+                                [1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [-TRANSLATE, 0, 0, 1]
+                            ])
                             break;
                         case "w":
-                            wt.setRow(3, [0, TRANSLATE, 0, 1])
+                            wt.setMatrix([
+                                [1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [0, TRANSLATE, 0, 1]
+                            ])
                             break;
                         case "s":
-                            wt.setRow(3, [0, -TRANSLATE, 0, 1])
+                            wt.setMatrix([
+                                [1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [0, -TRANSLATE, 0, 1]
+                            ])
                             break;
                         case "d":
-                            wt.setRow(3, [TRANSLATE, 0, 0, 1])
+                            wt.setMatrix([
+                                [1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [TRANSLATE, 0, 0, 1]
+                            ])
                             break;
                         case "q":
-                            wt.setRow(3, [0, 0, -TRANSLATE, 1])
+                            wt.setMatrix([
+                                [1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [0, 0, -TRANSLATE, 1]
+                            ])
                             break;
                         case "e":
-                            wt.setRow(3, [0, 0, TRANSLATE, 1])
+                            wt.setMatrix([
+                                [1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [0, 0, TRANSLATE, 1]
+                            ])
                             break;
                     }
 
@@ -119,22 +148,52 @@ window.onload = () => {
                 else if(CONTROLLER_KEYS.slice(6, 12)){
                     switch(ev.key){
                         case "j":
-                            wt.setRow(3, [-TRANSLATE, 0, 0, 1])
+                            wt.setMatrix([
+                                [1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [-TRANSLATE, 0, 0, 1]
+                            ])
                             break;
                         case "i":
-                            wt.setRow(3, [0, TRANSLATE, 0, 1])
+                            wt.setMatrix([
+                                [1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [0, TRANSLATE, 0, 1]
+                            ])
                             break;
                         case "k":
-                            wt.setRow(3, [0, -TRANSLATE, 0, 1])
+                            wt.setMatrix([
+                                [1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [0, -TRANSLATE, 0, 1]
+                            ])
                             break;
                         case "l":
-                            wt.setRow(3, [TRANSLATE, 0, 0, 1])
+                            wt.setMatrix([
+                                [1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [TRANSLATE, 0, 0, 1]
+                            ])
                             break;
                         case "u":
-                            wt.setRow(3, [0, 0, -TRANSLATE, 1])
+                            wt.setMatrix([
+                                [1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [0, 0, -TRANSLATE, 1]
+                            ])
                             break;
                         case "o":
-                            wt.setRow(3, [0, 0, TRANSLATE, 1])
+                            wt.setMatrix([
+                                [1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [0, 0, TRANSLATE, 1]
+                            ])
                             break
                     }
 
@@ -149,50 +208,90 @@ window.onload = () => {
             case "rotation":
 
                 if(CONTROLLER_KEYS.slice(0, 6).includes(ev.key)){
-                    console.log("I am in rotation object 1")
+                    
+                    let centroids = findCentroid(pyramid1.verticesWorld)
+                    let rotationMatrix, finalMatrix
+
                     switch(ev.key){
                         case "a":
-                            wt.setMatrix([[findCos(ROT_DEG), 0, -findSin(ROT_DEG), 0],
-                                        [0, 1, 0, 0],
-                                        [findSin(ROT_DEG), 0, findCos(ROT_DEG), 0],
-                                        [0, 0, 0, 1]])
+
+                            rotationMatrix = new Matrix([
+                                [findCos(ROT_DEG), 0, -findSin(ROT_DEG), 0],
+                                [0, 1, 0, 0],
+                                [findSin(ROT_DEG), 0, findCos(ROT_DEG), 0],
+                                [0, 0, 0, 1]
+                            ])
+
+                            finalMatrix = findRotationMatrix(centroids, rotationMatrix)
+
+                            wt.setMatrix(finalMatrix.matrix)
                             break;
 
                         case "w":
-                            wt.setMatrix([[1, 0, 0, 0],
-                                        [0, findCos(-ROT_DEG), findSin(-ROT_DEG), 0],
-                                        [0, -findSin(-ROT_DEG), findCos(-ROT_DEG), 0],
-                                        [0, 0, 0, 1]])
+
+                            rotationMatrix = new Matrix([
+                                [1, 0, 0, 0],
+                                [0, findCos(-ROT_DEG), findSin(-ROT_DEG), 0],
+                                [0, -findSin(-ROT_DEG), findCos(-ROT_DEG), 0],
+                                [0, 0, 0, 1]
+                            ])
+
+                            finalMatrix = findRotationMatrix(centroids, rotationMatrix)
+
+                            wt.setMatrix(finalMatrix.matrix)
                             break;
 
                         case "s":
-                            wt.setMatrix([[1, 0, 0, 0],
-                                        [0, findCos(ROT_DEG), findSin(ROT_DEG), 0],
-                                        [0, -findSin(ROT_DEG), findCos(ROT_DEG), 0],
-                                        [0, 0, 0, 1]])
+
+                            rotationMatrix = new Matrix([
+                                [1, 0, 0, 0],
+                                [0, findCos(ROT_DEG), findSin(ROT_DEG), 0],
+                                [0, -findSin(ROT_DEG), findCos(ROT_DEG), 0],
+                                [0, 0, 0, 1]
+                            ])
+
+                            finalMatrix = findRotationMatrix(centroids, rotationMatrix)
+
+                            wt.setMatrix(finalMatrix.matrix)
                             break;
 
                         case "d":
-                            wt.setMatrix([[findCos(-ROT_DEG), 0, -findSin(-ROT_DEG), 0],
-                                        [0, 1, 0, 0],
-                                        [findSin(-ROT_DEG), 0, findCos(-ROT_DEG), 0],
-                                        [0, 0, 0, 1]])
+
+                            rotationMatrix = new Matrix([
+                                [findCos(-ROT_DEG), 0, -findSin(-ROT_DEG), 0],
+                                [0, 1, 0, 0],
+                                [findSin(-ROT_DEG), 0, findCos(-ROT_DEG), 0],
+                                [0, 0, 0, 1]
+                            ])
+
+                            finalMatrix = findRotationMatrix(centroids, rotationMatrix)
+                            wt.setMatrix(finalMatrix.matrix)
                             break;
 
                         case "q":
+                            
+                            rotationMatrix = new Matrix([
+                                [findCos(ROT_DEG), findSin(ROT_DEG), 0, 0],
+                                [-findSin(ROT_DEG), findCos(ROT_DEG), 0, 0],
+                                [0, 0, 1, 0],
+                                [0, 0, 0, 1]
+                            ])
 
-                            wt.setMatrix([[findCos(ROT_DEG), findSin(ROT_DEG), 0, 0],
-                                        [-findSin(ROT_DEG), findCos(ROT_DEG), 0, 0],
-                                        [0, 0, 1, 0],
-                                        [0, 0, 0, 1]])
-
+                            finalMatrix = findRotationMatrix(centroids, rotationMatrix)
+                            wt.setMatrix(finalMatrix.matrix)
                             break;
 
                         case "e":
-                            wt.setMatrix([[findCos(-ROT_DEG), findSin(-ROT_DEG), 0, 0],
-                                        [-findSin(-ROT_DEG), findCos(-ROT_DEG), 0, 0],
-                                        [0, 0, 1, 0],
-                                        [0, 0, 0, 1]])
+
+                            rotationMatrix = new Matrix([
+                                [findCos(-ROT_DEG), findSin(-ROT_DEG), 0, 0],
+                                [-findSin(-ROT_DEG), findCos(-ROT_DEG), 0, 0],
+                                [0, 0, 1, 0],
+                                [0, 0, 0, 1]
+                            ])
+
+                            finalMatrix = findRotationMatrix(centroids, rotationMatrix)
+                            wt.setMatrix(finalMatrix.matrix)
                             break;
                         
                     }
@@ -201,49 +300,97 @@ window.onload = () => {
 
                 }
                 else if(CONTROLLER_KEYS.slice(6, 12).includes(ev.key)){
+
+                    let centroids = findCentroid(pyramid2.verticesWorld)
+                    let rotationMatrix, finalMatrix
+                    
                     switch(ev.key){
                         case "j":
-                            wt.setMatrix([[findCos(ROT_DEG), 0, -findSin(ROT_DEG), 0],
-                                        [0, 1, 0, 0],
-                                        [findSin(ROT_DEG), 0, findCos(ROT_DEG), 0],
-                                        [0, 0, 0, 1]])
+
+                            rotationMatrix = new Matrix([
+                                [findCos(ROT_DEG), 0, -findSin(ROT_DEG), 0],
+                                [0, 1, 0, 0],
+                                [findSin(ROT_DEG), 0, findCos(ROT_DEG), 0],
+                                [0, 0, 0, 1]])
+
+                            finalMatrix = findRotationMatrix(centroids, rotationMatrix)
+
+                            wt.setMatrix(finalMatrix.matrix)
+
                             break;
 
                         case "i":
-                            wt.setMatrix([[1, 0, 0, 0],
-                                        [0, findCos(-ROT_DEG), findSin(-ROT_DEG), 0],
-                                        [0, -findSin(-ROT_DEG), findCos(-ROT_DEG), 0],
-                                        [0, 0, 0, 1]])
+
+                            rotationMatrix = new Matrix([
+                                [1, 0, 0, 0],
+                                [0, findCos(-ROT_DEG), findSin(-ROT_DEG), 0],
+                                [0, -findSin(-ROT_DEG), findCos(-ROT_DEG), 0],
+                                [0, 0, 0, 1]])
+                            
+                            finalMatrix = findRotationMatrix(centroids, rotationMatrix)
+
+                            wt.setMatrix(finalMatrix.matrix)
+
                             break;
 
                         case "k":
-                            wt.setMatrix([[1, 0, 0, 0],
-                                        [0, findCos(ROT_DEG), findSin(ROT_DEG), 0],
-                                        [0, -findSin(ROT_DEG), findCos(ROT_DEG), 0],
-                                        [0, 0, 0, 1]])
+
+                            rotationMatrix = new Matrix([
+                                [1, 0, 0, 0],
+                                [0, findCos(ROT_DEG), findSin(ROT_DEG), 0],
+                                [0, -findSin(ROT_DEG), findCos(ROT_DEG), 0],
+                                [0, 0, 0, 1]
+                            ])
+
+                            finalMatrix = findRotationMatrix(centroids, rotationMatrix)
+
+                            wt.setMatrix(finalMatrix.matrix)
+
                             break;
 
                         case "l":
-                            wt.setMatrix([[findCos(-ROT_DEG), 0, -findSin(-ROT_DEG), 0],
-                                        [0, 1, 0, 0],
-                                        [findSin(-ROT_DEG), 0, findCos(-ROT_DEG), 0],
-                                        [0, 0, 0, 1]])
+
+                            rotationMatrix = new Matrix([
+                                [findCos(-ROT_DEG), 0, -findSin(-ROT_DEG), 0],
+                                [0, 1, 0, 0],
+                                [findSin(-ROT_DEG), 0, findCos(-ROT_DEG), 0],
+                                [0, 0, 0, 1]
+                            ])
+
+                            finalMatrix = findRotationMatrix(centroids, rotationMatrix)
+
+                            wt.setMatrix(finalMatrix.matrix)
+
                             break;
 
                         case "u":
 
-                            wt.setMatrix([[findCos(ROT_DEG), findSin(ROT_DEG), 0, 0],
-                                        [-findSin(ROT_DEG), findCos(ROT_DEG), 0, 0],
-                                        [0, 0, 1, 0],
-                                        [0, 0, 0, 1]])
+                            rotationMatrix = new Matrix([
+                                [findCos(ROT_DEG), findSin(ROT_DEG), 0, 0],
+                                [-findSin(ROT_DEG), findCos(ROT_DEG), 0, 0],
+                                [0, 0, 1, 0],
+                                [0, 0, 0, 1]
+                            ])
+
+                            finalMatrix = findRotationMatrix(centroids, rotationMatrix)
+
+                            wt.setMatrix(finalMatrix.matrix)
 
                             break;
 
                         case "o":
-                            wt.setMatrix([[findCos(-ROT_DEG), findSin(-ROT_DEG), 0, 0],
-                                        [-findSin(-ROT_DEG), findCos(-ROT_DEG), 0, 0],
-                                        [0, 0, 1, 0],
-                                        [0, 0, 0, 1]])
+
+                            rotationMatrix = new Matrix([
+                                [findCos(-ROT_DEG), findSin(-ROT_DEG), 0, 0],
+                                [-findSin(-ROT_DEG), findCos(-ROT_DEG), 0, 0],
+                                [0, 0, 1, 0],
+                                [0, 0, 0, 1]
+                            ])
+
+                            finalMatrix = findRotationMatrix(centroids, rotationMatrix)
+
+                            wt.setMatrix(finalMatrix.matrix)
+
                             break; 
                     }
 

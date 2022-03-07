@@ -5,6 +5,18 @@ export const clearCanvas = (context, canvas) => {
     context.clearRect(0, 0, canvas.width, canvas.height)
 }
 
+export const degToRad = (deg) => {
+    return deg * 3.14 / 180
+}
+
+export const findCos = (deg) => {
+    return Math.cos(degToRad(deg))
+}
+
+export const findSin = (deg) => {
+    return Math.sin(degToRad(deg))
+}
+
 export const drawLine = (context, point1, point2, color="white") => {
 
     context.beginPath()
@@ -61,14 +73,34 @@ export const multMatrix4x4 = (matrix1, matrix2) => {
 
 }
 
-export const degToRad = (deg) => {
-    return deg * 3.14 / 180
+export const findCentroid = (listOfVertices) => {
+    let centX = 0, centY = 0, centZ = 0
+
+    for(let vertex of listOfVertices){
+        centX += vertex.x
+        centY += vertex.y
+        centZ += vertex.z
+    }
+
+    centX /= listOfVertices.length
+    centY /= listOfVertices.length
+    centZ /= listOfVertices.length
+
+    return {centX, centY, centZ}
 }
 
-export const findCos = (deg) => {
-    return Math.cos(degToRad(deg))
-}
+export const findRotationMatrix = (centroids, rotationMatrix) => {
+    let adjustMatrix1 = new Matrix([[1, 0, 0, 0],
+                                    [0, 1, 0, 0],
+                                    [0, 0, 1, 0],
+                                    [-centroids.centX, -centroids.centY, -centroids.centZ, 1]])
 
-export const findSin = (deg) => {
-    return Math.sin(degToRad(deg))
+    let adjustMatrix2 = new Matrix([[1, 0, 0, 0],
+                                    [0, 1, 0, 0],
+                                    [0, 0, 1, 0],
+                                    [centroids.centX, centroids.centY, centroids.centZ, 1]])
+
+    let result = multMatrix4x4(multMatrix4x4(adjustMatrix1, rotationMatrix), adjustMatrix2)
+
+    return result
 }
