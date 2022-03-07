@@ -31,23 +31,6 @@ class Pyramid{
         this.verticesScreen[index] = point
     }
 
-    drawPyramid(wt, vt, st){
-        for(let index=0; index < this.vertices.length; index++){
-            this.addVerticesWorld(index, transformPoint(this.verticesWorld[index], wt))
-            this.addVerticesView(index, transformPoint(this.verticesWorld[index], vt))
-            this.addVerticesScreen(index, transformPoint(this.verticesView[index], st))
-        }
-    
-    
-        for(let index=3; index < this.edges.length; index++){
-            drawLine(this.context, this.verticesScreen[this.edges[index].indexStart], this.verticesScreen[this.edges[index].indexEnd])
-        }
-        
-        for(let index=0; index < 3; index++){
-            drawLine(this.context, this.verticesScreen[this.edges[index].indexStart], this.verticesScreen[this.edges[index].indexEnd], "#2285e4")
-        }
-    }
-
     initPyramid(wt, vt, st){
         for(let index=0; index < this.vertices.length; index++){
             this.addVerticesWorld(index, transformPoint(this.vertices[index], wt))
@@ -64,6 +47,25 @@ class Pyramid{
             drawLine(this.context, this.verticesScreen[this.edges[index].indexStart], this.verticesScreen[this.edges[index].indexEnd], "#2285e4")
         }
     }
+
+    drawPyramid(){
+        for(let index=3; index < this.edges.length; index++){
+            drawLine(this.context, this.verticesScreen[this.edges[index].indexStart], this.verticesScreen[this.edges[index].indexEnd])
+        }
+        
+        for(let index=0; index < 3; index++){
+            drawLine(this.context, this.verticesScreen[this.edges[index].indexStart], this.verticesScreen[this.edges[index].indexEnd], "#2285e4")
+        }
+    }
+
+    transformPyramid(wt, vt, st){
+        for(let index=0; index < this.vertices.length; index++){
+            this.addVerticesWorld(index, transformPoint(this.verticesWorld[index], wt))
+            this.addVerticesView(index, transformPoint(this.verticesWorld[index], vt))
+            this.addVerticesScreen(index, transformPoint(this.verticesView[index], st))
+        }
+    }
+
 }
 
 export default Pyramid

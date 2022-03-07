@@ -42,8 +42,8 @@ body{
     background-color: #C2C2C280;
     text-align: center;
     display: grid;
-    grid-template-rows: repeat(3, 1fr);
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     padding: 1rem;
     width: 15%;
     gap: 0.15rem;
@@ -51,7 +51,7 @@ body{
 }
 
 .object-controller > p{
-    grid-column: 1 / 4;
+    grid-column: 1 / 5;
     margin: 0;
     display: flex;
     align-items: center;
@@ -82,12 +82,36 @@ body{
 
 .controller-left{
     grid-column: 1 / 2;
-    grid-row: 2 / 4;
+    grid-row: 2 / 5;
 }
 
 .controller-right{
+    grid-column: 4 / 5;
+    grid-row: 2 / 5;
+}
+
+.controller-up, .controller-down{
+    grid-column: 2 / 4;
+}
+
+.controller-up{
+    grid-row: 2 / 3;
+}
+
+.controller-down{
+    grid-row: 4 / 5;
+}
+
+.controller-in, .controller-out{
+    grid-row: 3 / 4;
+}
+
+.controller-in{
     grid-column: 3 / 4;
-    grid-row: 2 / 4;
+}
+
+.controller-out{
+    grid-column: 2 / 3;
 }
 
 #manipulation-translation::after,
