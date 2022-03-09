@@ -1,0 +1,28 @@
+*,
+*::before,
+*::after{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    height: 100vh;
+    width: 100vw;
+}
+
+body{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+#sandbox-canvas{
+    background-color: black;
+    width: 800px;
+    height: 600px;
+    margin-bottom: 1rem;
+}
