@@ -2,6 +2,7 @@ import Point from './classes/Point.js'
 import Edge from './classes/Edge.js'
 import Matrix from './classes/Matrix.js'
 import Pyramid from './classes/Pyramid.js'
+import Vector from './classes/Vector.js'
 
 import { clearCanvas, findCos, findSin, findCentroid, findRotationMatrix } from './functions.js'
 
@@ -406,7 +407,6 @@ window.onload = () => {
             default:
                 console.error("Unrecognized manipulation method")
         }
-
     })
     
     window.addEventListener("keyup", (ev) => {
@@ -428,4 +428,5 @@ window.onload = () => {
     for(let radioButton of manipulationSelections){
         radioButton.addEventListener("change", (ev) => handleChangeManipulation(ev))
     }
+
 }

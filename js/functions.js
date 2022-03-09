@@ -1,5 +1,6 @@
 import Matrix from "./classes/Matrix.js"
 import Point from "./classes/Point.js"
+import Vector from "./classes/Vector.js"
 
 export const clearCanvas = (context, canvas) => {
     context.clearRect(0, 0, canvas.width, canvas.height)
@@ -15,6 +16,22 @@ export const findCos = (deg) => {
 
 export const findSin = (deg) => {
     return Math.sin(degToRad(deg))
+}
+
+export const dotProduct = (vector1, vector2) => {
+    return (vector1.x * vector2.x) + (vector1.y * vector2.y) + (vector1.z * vector2.z)
+}
+
+export const crossProduct = (vector1, vector2) => {
+    const resultVector = new Vector()
+
+    const resultX = (vector1.y * vector2.z) - (vector2.y * vector1.z)
+    const resultY = (vector1.z * vector2.x) - (vector2.z * vector1.x)
+    const resultZ = (vector1.x * vector2.y) - (vector2.x * vector1.y)
+
+    resultVector.setVector(resultX, resultY, resultZ)
+
+    return resultVector
 }
 
 export const drawLine = (context, point1, point2, color="white") => {
