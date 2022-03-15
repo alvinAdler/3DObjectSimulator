@@ -1,11 +1,11 @@
 class Surface{
-    constructor(arrOfEdges=[], surfColor="black"){
-        this.edges = arrOfEdges
+    constructor(indexOfEdges=[], surfColor="black"){
+        this.edgeIndices = indexOfEdges
         this.surfColor = surfColor
     }
 
-    setEdges(newArrOfEdges){
-        this.edges = new newArrOfEdges
+    setEdges(newIndexOfEdges){
+        this.edges = new newIndexOfEdges
     }
 
     setSurfColor(newColor){

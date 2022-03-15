@@ -1,13 +1,17 @@
 import { drawLine, transformPoint } from "../functions.js"
 
 class Pyramid{
-    constructor(canvas, context, listOfVertices=[], listOfEdges=[]){
+    constructor(canvas, context, listOfVertices=[], listOfEdges=[], listOfSurfaces=[]){
 
         this.canvas = canvas
         this.context = context
 
         this.vertices = listOfVertices
         this.edges = listOfEdges
+        this.surfaces = listOfSurfaces
+
+        this.frontSurfaces = []
+        this.visibleSurfaces = []
 
         this.verticesWorld = []
         this.verticesView = []
