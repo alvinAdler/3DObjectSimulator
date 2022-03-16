@@ -2,6 +2,8 @@ import Point from './classes/Point.js'
 import Edge from './classes/Edge.js'
 import Surface from './classes/Surface.js'
 import Pyramid from './classes/Pyramid.js'
+import SETTower from './classes/SETTower.js'
+import SETBrick from './classes/SETBrick.js'
 
 import { drawLine } from './functions.js'
 
@@ -12,6 +14,8 @@ window.onload = () => {
 
     canvas.width = canvas.offsetWidth
     canvas.height = canvas.offsetHeight
+
+    const pyramid1_setTower = new SETTower()
 
     let pyramid1_point1 = new Point(100, 100, 0)
     let pyramid1_point2 = new Point(200, 400, 0)
@@ -39,6 +43,17 @@ window.onload = () => {
     let pyramid1 = new Pyramid(canvas, context, pyramid1_vertices, pyramid_edges, [surfaces])
     let pyramid2 = new Pyramid(canvas, context, pyramid2_vertices, pyramid_edges, [surfaces])
     let pyramid3 = new Pyramid(canvas, context, pyramid3_vertices, pyramid_edges, [surfaces])
+
+    for(let edge of pyramid1.edges){
+        let point1 = pyramid1.vertices[edge.indexStart]
+        let point2 = pyramid1.vertices[edge.indexEnd]
+
+        let setBrick = new SETBrick(point1, point2)
+
+        pyramid1_setTower.pushSetBrick(setBrick)
+    }
+
+    console.log(pyramid1_setTower)
 
     for(let edge of pyramid1.edges){
         let point1 = pyramid1.vertices[edge.indexStart]
