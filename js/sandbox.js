@@ -16,6 +16,8 @@ window.onload = () => {
     canvas.height = canvas.offsetHeight
 
     const pyramid1_setTower = new SETTower()
+    const pyramid2_setTower = new SETTower()
+    const pyramid3_setTower = new SETTower()
 
     let pyramid1_point1 = new Point(100, 100, 0)
     let pyramid1_point2 = new Point(200, 400, 0)
@@ -53,7 +55,23 @@ window.onload = () => {
         pyramid1_setTower.pushSetBrick(setBrick)
     }
 
-    console.log(pyramid1_setTower)
+    for(let edge of pyramid2.edges){
+        let point1 = pyramid2.vertices[edge.indexStart]
+        let point2 = pyramid2.vertices[edge.indexEnd]
+
+        let setBrick = new SETBrick(point1, point2)
+
+        pyramid2_setTower.pushSetBrick(setBrick)
+    }
+
+    for(let edge of pyramid3.edges){
+        let point1 = pyramid3.vertices[edge.indexStart]
+        let point2 = pyramid3.vertices[edge.indexEnd]
+
+        let setBrick = new SETBrick(point1, point2)
+
+        pyramid3_setTower.pushSetBrick(setBrick)
+    }
 
     for(let edge of pyramid1.edges){
         let point1 = pyramid1.vertices[edge.indexStart]
@@ -79,8 +97,8 @@ window.onload = () => {
 
     fillPolyButton.addEventListener("click", () => {
         console.log("Filling polygons...")
-        console.log(pyramid1)
-        console.log("==========================")
-        console.log(pyramid2)
+        pyramid1_setTower.fillPolygon(context, "red")
+        pyramid2_setTower.fillPolygon(context, "blue")
+        pyramid3_setTower.fillPolygon(context, "green")
     })
 }
