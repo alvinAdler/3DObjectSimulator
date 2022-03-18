@@ -1,5 +1,5 @@
 class Surface{
-    constructor(indexOfEdges=[], surfColor="black"){
+    constructor(indexOfEdges=[], surfColor="white"){
         this.edgeIndices = indexOfEdges
         this.surfColor = surfColor
     }

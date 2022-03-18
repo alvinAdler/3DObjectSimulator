@@ -5,21 +5,21 @@ import Pyramid from './classes/Pyramid.js'
 import Vector from './classes/Vector.js'
 
 import { clearCanvas, findCos, findSin, findCentroid, findRotationMatrix } from './functions.js'
+import Surface from './classes/Surface.js'
 
 const TRANSLATE = 0.05
-
-const ELEV_DEG = 0
-const DIR_DEG = 0
 
 const ROT_DEG = 1
 
 const CONTROLLER_KEYS = ["a", "w", "s", "d", "q", "e", "j", "i", "k", "l", "u", "o"]
 
+const USER_LOCATION = new Vector(0, 0, 5)
+
 window.onload = () => {
 
     const drawPyramids = (listOfPyramids) => {
         for(let pyramid of listOfPyramids){
-            pyramid.drawPyramid()
+            pyramid.drawWireframe()
         }
     }
 
@@ -48,13 +48,26 @@ window.onload = () => {
     let pyramid_e4 = new Edge(1, 2)
     let pyramid_e5 = new Edge(1, 3)
 
+    let pyramid1_s0 = new Surface([0, 2, 1], "red")
+    let pyramid1_s1 = new Surface([1, 4, 5], "blue")
+    let pyramid1_s2 = new Surface([5, 3, 0], "green")
+    let pyramid1_s3 = new Surface([3, 4, 2], "yellow")
+
+    let pyramid2_s0 = new Surface([3, 4, 2], "lightred")
+    let pyramid2_s1 = new Surface([3, 4, 2], "lightblue")
+    let pyramid2_s2 = new Surface([3, 4, 2], "lightgreen")
+    let pyramid2_s3 = new Surface([3, 4, 2], "lightyellow")
+
     let pyramid1_listOfVertices = [pyramid1_v0, pyramid1_v1, pyramid1_v2, pyramid1_v3]
     let pyramid2_listOfVertices = [pyramid2_v0, pyramid2_v1, pyramid2_v2, pyramid2_v3]
 
     let pyramid_listOfEdges = [pyramid_e0, pyramid_e1, pyramid_e2, pyramid_e3, pyramid_e4, pyramid_e5]
 
-    let pyramid1 = new Pyramid(mainCanvas, context, pyramid1_listOfVertices, pyramid_listOfEdges)
-    let pyramid2 = new Pyramid(mainCanvas, context, pyramid2_listOfVertices, pyramid_listOfEdges)
+    let pyramid1_listOfSurfaces = [pyramid1_s0, pyramid1_s1, pyramid1_s2, pyramid1_s3]
+    let pyramid2_listOfSurfaces = [pyramid2_s0, pyramid2_s1, pyramid2_s2, pyramid2_s3]
+
+    let pyramid1 = new Pyramid(mainCanvas, context, pyramid1_listOfVertices, pyramid_listOfEdges, pyramid1_listOfSurfaces)
+    let pyramid2 = new Pyramid(mainCanvas, context, pyramid2_listOfVertices, pyramid_listOfEdges, pyramid2_listOfSurfaces)
 
     let wt = new Matrix([[1, 0, 0, 0], 
                         [0, 1, 0, 0],
@@ -63,7 +76,7 @@ window.onload = () => {
 
     let vt = new Matrix([[1, 0, 0, 0],
                         [0, 1, 0, 0],
-                        [0, 0, 0, -0.2],
+                        [0, 0, 0, -1/USER_LOCATION.z],
                         [0, 0, 0, 1]])
 
                         
@@ -217,9 +230,9 @@ window.onload = () => {
                         case "a":
 
                             rotationMatrix = new Matrix([
-                                [findCos(ROT_DEG), 0, -findSin(ROT_DEG), 0],
+                                [findCos(-ROT_DEG), 0, -findSin(-ROT_DEG), 0],
                                 [0, 1, 0, 0],
-                                [findSin(ROT_DEG), 0, findCos(ROT_DEG), 0],
+                                [findSin(-ROT_DEG), 0, findCos(-ROT_DEG), 0],
                                 [0, 0, 0, 1]
                             ])
 
@@ -259,9 +272,9 @@ window.onload = () => {
                         case "d":
 
                             rotationMatrix = new Matrix([
-                                [findCos(-ROT_DEG), 0, -findSin(-ROT_DEG), 0],
+                                [findCos(ROT_DEG), 0, -findSin(ROT_DEG), 0],
                                 [0, 1, 0, 0],
-                                [findSin(-ROT_DEG), 0, findCos(-ROT_DEG), 0],
+                                [findSin(ROT_DEG), 0, findCos(ROT_DEG), 0],
                                 [0, 0, 0, 1]
                             ])
 
@@ -309,9 +322,9 @@ window.onload = () => {
                         case "j":
 
                             rotationMatrix = new Matrix([
-                                [findCos(ROT_DEG), 0, -findSin(ROT_DEG), 0],
+                                [findCos(-ROT_DEG), 0, -findSin(-ROT_DEG), 0],
                                 [0, 1, 0, 0],
-                                [findSin(ROT_DEG), 0, findCos(ROT_DEG), 0],
+                                [findSin(-ROT_DEG), 0, findCos(-ROT_DEG), 0],
                                 [0, 0, 0, 1]])
 
                             finalMatrix = findRotationMatrix(centroids, rotationMatrix)
@@ -352,9 +365,9 @@ window.onload = () => {
                         case "l":
 
                             rotationMatrix = new Matrix([
-                                [findCos(-ROT_DEG), 0, -findSin(-ROT_DEG), 0],
+                                [findCos(ROT_DEG), 0, -findSin(ROT_DEG), 0],
                                 [0, 1, 0, 0],
-                                [findSin(-ROT_DEG), 0, findCos(-ROT_DEG), 0],
+                                [findSin(ROT_DEG), 0, findCos(ROT_DEG), 0],
                                 [0, 0, 0, 1]
                             ])
 

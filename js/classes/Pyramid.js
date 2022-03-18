@@ -1,4 +1,5 @@
-import { drawLine, transformPoint } from "../functions.js"
+import { drawLine, transformPoint, findVector, findDotProduct, findCrossProduct } from "../functions.js"
+import Vector from "./Vector.js"
 
 class Pyramid{
     constructor(canvas, context, listOfVertices=[], listOfEdges=[], listOfSurfaces=[]){
@@ -52,7 +53,15 @@ class Pyramid{
         }
     }
 
-    drawPyramid(){
+    transformPyramid(wt, vt, st){
+        for(let index=0; index < this.vertices.length; index++){
+            this.addVerticesWorld(index, transformPoint(this.verticesWorld[index], wt))
+            this.addVerticesView(index, transformPoint(this.verticesWorld[index], vt))
+            this.addVerticesScreen(index, transformPoint(this.verticesView[index], st))
+        }
+    }
+
+    drawWireframe(){
         for(let index=3; index < this.edges.length; index++){
             drawLine(this.context, this.verticesScreen[this.edges[index].indexStart], this.verticesScreen[this.edges[index].indexEnd])
         }
@@ -62,12 +71,25 @@ class Pyramid{
         }
     }
 
-    transformPyramid(wt, vt, st){
-        for(let index=0; index < this.vertices.length; index++){
-            this.addVerticesWorld(index, transformPoint(this.verticesWorld[index], wt))
-            this.addVerticesView(index, transformPoint(this.verticesWorld[index], vt))
-            this.addVerticesScreen(index, transformPoint(this.verticesView[index], st))
+    determineFrontSurfaces(userLocation){
+        for(let surface of this.surfaces){
+            let edge1 = this.edges[surface[0]]
+            let edge2 = this.edges[surface[1]]
+
+            let vector1 = findVector(this.verticesScreen[edge1.indexStart], this.verticesScreen[edge1.indexEnd])
+            let vector2 = findVector(this.verticesScreen[edge1.indexStart], this.verticesScreen[edge2.indexEnd])
+
+            let surfaceNormal = findCrossProduct(vector1, vector2)
+
+            console.log(surface)
+            console.log(surfaceNormal)
+
+            console.log("=========================")
         }
+    }
+
+    drawSolid(){
+
     }
 
 }

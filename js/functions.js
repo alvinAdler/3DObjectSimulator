@@ -18,11 +18,15 @@ export const findSin = (deg) => {
     return Math.sin(degToRad(deg))
 }
 
-export const dotProduct = (vector1, vector2) => {
+export const findVector = (point1, point2) => {
+    return new Vector(point2.x - point1.x, point2.y - point1.y, point2.z - point1.z)
+}
+
+export const findDotProduct = (vector1, vector2) => {
     return (vector1.x * vector2.x) + (vector1.y * vector2.y) + (vector1.z * vector2.z)
 }
 
-export const crossProduct = (vector1, vector2) => {
+export const findCrossProduct = (vector1, vector2) => {
     const resultVector = new Vector()
 
     const resultX = (vector1.y * vector2.z) - (vector2.y * vector1.z)
