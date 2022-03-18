@@ -28,6 +28,8 @@ window.onload = () => {
     let manipulationSelections = document.querySelectorAll("input[name='manipulation-method']")
     let manipulationMethod = document.querySelector("input[name='manipulation-method']:checked").value
 
+    const devButton = document.querySelector("#dev-button")
+
     mainCanvas.width = mainCanvas.offsetWidth
     mainCanvas.height = mainCanvas.offsetHeight
 
@@ -432,6 +434,16 @@ window.onload = () => {
         
         key.style.backgroundColor = "#EB4034"
         key.style.color = "white"
+    })
+
+    devButton.addEventListener("click", (ev) => {
+        const buttonsHolder = document.querySelector(".dev-action-buttons")
+
+        if(window.getComputedStyle(buttonsHolder).display === "none"){
+            buttonsHolder.style.display = "flex"
+        }else{
+            buttonsHolder.style.display = "none"
+        }
     })
 
     const handleChangeManipulation = (ev) => {
