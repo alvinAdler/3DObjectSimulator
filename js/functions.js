@@ -125,3 +125,22 @@ export const findRotationMatrix = (centroids, rotationMatrix) => {
 
     return result
 }
+
+export const findCounterClockwiseVertices = (edge1, edge2, edge3) => {
+    const indexAddHolder = [...Object.values(edge1), ...Object.values(edge2), ...Object.values(edge3)].reduce((curr, acc) => curr + acc, 0)
+
+    switch(indexAddHolder){
+        case 10:
+            //surface 0
+            return [3, 0, 2]
+        case 12:
+            //surface 1
+            return [3, 2, 1]
+        case 8:
+            //surface 2
+            return [3, 1, 0]
+        case 6:
+            //surface 3
+            return [0, 1, 2]
+    }
+}

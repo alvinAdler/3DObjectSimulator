@@ -1,4 +1,4 @@
-import { drawLine, transformPoint, findVector, findDotProduct, findCrossProduct } from "../functions.js"
+import { drawLine, transformPoint, findVector, findDotProduct, findCrossProduct, findCounterClockwiseVertices } from "../functions.js"
 import Vector from "./Vector.js"
 
 class Pyramid{
@@ -72,24 +72,40 @@ class Pyramid{
     }
 
     determineFrontSurfaces(userLocation){
-        for(let surface of this.surfaces){
-            let edge1 = this.edges[surface[0]]
-            let edge2 = this.edges[surface[1]]
+        this.frontSurfaces = []
 
-            let vector1 = findVector(this.verticesScreen[edge1.indexStart], this.verticesScreen[edge1.indexEnd])
-            let vector2 = findVector(this.verticesScreen[edge1.indexStart], this.verticesScreen[edge2.indexEnd])
+        for(let surface of this.surfaces){
+            let edge1 = this.edges[surface.edgeIndices[0]]
+            let edge2 = this.edges[surface.edgeIndices[1]]
+            let edge3 = this.edges[surface.edgeIndices[2]]
+
+            const counterIndices = findCounterClockwiseVertices(edge1, edge2, edge3)
+
+            let point1 = this.verticesScreen[counterIndices[0]]
+            let point2 = this.verticesScreen[counterIndices[1]]
+            let point3 = this.verticesScreen[counterIndices[2]]
+
+            let vector1 = findVector(point1, point2)
+            let vector2 = findVector(point1, point3)
 
             let surfaceNormal = findCrossProduct(vector1, vector2)
 
-            console.log(surface)
-            console.log(surfaceNormal)
+            let dotProductResult = findDotProduct(userLocation, surfaceNormal)
 
-            console.log("=========================")
+            if(dotProductResult < 0){
+                this.frontSurfaces.push(surface)
+            }
         }
     }
 
-    drawSolid(){
-
+    drawSolid(context){
+        for(let surface of this.frontSurfaces){
+            for(let edge of surface.edgeIndices){
+                let point1 = this.verticesScreen[this.edges[edge].indexStart]
+                let point2 = this.verticesScreen[this.edges[edge].indexEnd]
+                drawLine(context, point1, point2, "white")
+            }
+        }
     }
 
 }

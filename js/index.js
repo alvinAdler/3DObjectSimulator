@@ -19,7 +19,9 @@ window.onload = () => {
 
     const drawPyramids = (listOfPyramids) => {
         for(let pyramid of listOfPyramids){
-            pyramid.drawWireframe()
+            pyramid.determineFrontSurfaces(USER_LOCATION)
+            pyramid.drawSolid(context)
+            // pyramid.drawWireframe(context)
         }
     }
 
@@ -29,6 +31,7 @@ window.onload = () => {
     let manipulationMethod = document.querySelector("input[name='manipulation-method']:checked").value
 
     const devButton = document.querySelector("#dev-button")
+    const verticesScreenButton = document.querySelector("#vertices-screen-button")
 
     mainCanvas.width = mainCanvas.offsetWidth
     mainCanvas.height = mainCanvas.offsetHeight
@@ -43,9 +46,9 @@ window.onload = () => {
     let pyramid2_v2 = new Point(5, -1, 1)
     let pyramid2_v3 = new Point(4, 1, 0)
 
-    let pyramid_e0 = new Edge(0, 3)
-    let pyramid_e1 = new Edge(3, 2)
-    let pyramid_e2 = new Edge(2, 0)
+    let pyramid_e0 = new Edge(3, 0)
+    let pyramid_e1 = new Edge(2, 3)
+    let pyramid_e2 = new Edge(0, 2)
     let pyramid_e3 = new Edge(0, 1)
     let pyramid_e4 = new Edge(1, 2)
     let pyramid_e5 = new Edge(1, 3)
@@ -55,9 +58,9 @@ window.onload = () => {
     let pyramid1_s2 = new Surface([5, 3, 0], "green")
     let pyramid1_s3 = new Surface([3, 4, 2], "yellow")
 
-    let pyramid2_s0 = new Surface([3, 4, 2], "lightred")
-    let pyramid2_s1 = new Surface([3, 4, 2], "lightblue")
-    let pyramid2_s2 = new Surface([3, 4, 2], "lightgreen")
+    let pyramid2_s0 = new Surface([0, 2, 1], "lightred")
+    let pyramid2_s1 = new Surface([1, 4, 5], "lightblue")
+    let pyramid2_s2 = new Surface([5, 3, 0], "lightgreen")
     let pyramid2_s3 = new Surface([3, 4, 2], "lightyellow")
 
     let pyramid1_listOfVertices = [pyramid1_v0, pyramid1_v1, pyramid1_v2, pyramid1_v3]
@@ -78,18 +81,22 @@ window.onload = () => {
 
     let vt = new Matrix([[1, 0, 0, 0],
                         [0, 1, 0, 0],
-                        [0, 0, 0, -1/USER_LOCATION.z],
+                        [0, 0, 1, -1/USER_LOCATION.z],
                         [0, 0, 0, 1]])
 
                         
     let st = new Matrix([[87.5, 0, 0, 0],
                         [0, -87.5, 0, 0],
-                        [0, 0, 0, 0],
+                        [0, 0, 87.5, 0],
                         [700, 350, 0, 1]])
 
     
     pyramid1.initPyramid(wt, vt, st)
     pyramid2.initPyramid(wt, vt, st)
+
+    clearCanvas(context, mainCanvas)
+
+    drawPyramids([pyramid1, pyramid2])
 
     window.addEventListener("keydown", (ev) => {
         const key = document.querySelector(`#button-${ev.key}`)
@@ -436,7 +443,7 @@ window.onload = () => {
         key.style.color = "white"
     })
 
-    devButton.addEventListener("click", (ev) => {
+    devButton.addEventListener("click", () => {
         const buttonsHolder = document.querySelector(".dev-action-buttons")
 
         if(window.getComputedStyle(buttonsHolder).display === "none"){
@@ -444,6 +451,16 @@ window.onload = () => {
         }else{
             buttonsHolder.style.display = "none"
         }
+    })
+
+    verticesScreenButton.addEventListener("click", () => {
+        console.log("Pyramid1")
+        console.log(pyramid1.verticesScreen)
+
+        console.log("========================")
+
+        console.log("Pyramid2")
+        console.log(pyramid2.verticesScreen)
     })
 
     const handleChangeManipulation = (ev) => {
