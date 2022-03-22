@@ -51,17 +51,37 @@ window.onload = () => {
             //Sort the ael
             globalTower.ael.sort((item1, item2) => item1.xofymin - item2.xofymin)
 
-            //Generate the flag table
-            if(currentY === minimumY + 20){
+            
+            // if(currentY === minimumY + 100){
+                //Generate the flag table
                 const sampleFlagTable = new FlagTable(globalTower.ael)
                 sampleFlagTable.generateTable()
 
-                console.table(sampleFlagTable.table)
-                for(let item of sampleFlagTable.bricksList){
-                    console.log(item)
+                const tableWidth = sampleFlagTable.table[Object.keys(sampleFlagTable.table)[0]].length
+
+                //Process the spans based on the generated flag table
+                for(let flagIndex = 1; flagIndex < tableWidth; flagIndex++){
+                    let flagTrueHolder = []
+                    for(let flagKey of Object.keys(sampleFlagTable.table)){
+                        if(sampleFlagTable.table[flagKey][flagIndex] === true){
+                            flagTrueHolder.push(flagKey)
+                            continue
+                        }
+                    }
+
+                    // console.log(flagIndex)
+                    // console.log(flagTrueHolder)
+                    // console.log("===========================")
+
+                    if(flagTrueHolder.length === 1){
+                        let point1 = new Point(Math.round(globalTower.ael[flagIndex - 1].xofymin), currentY, 0)
+                        let point2 = new Point(Math.round(globalTower.ael[flagIndex].xofymin), currentY, 0)
+
+                        drawLine(context, point1, point2, flagTrueHolder[0])
+                    }
                 }
                 
-            }
+            // }
         }
 
     }
