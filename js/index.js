@@ -3,8 +3,10 @@ import Edge from './classes/Edge.js'
 import Matrix from './classes/Matrix.js'
 import Pyramid from './classes/Pyramid.js'
 import Vector from './classes/Vector.js'
+import SetTower from './classes/SETTower.js'
+import FlagTable from './classes/FlagTable.js'
 
-import { clearCanvas, findCos, findSin, findCentroid, findRotationMatrix } from './functions.js'
+import { clearCanvas, findCos, findSin, findCentroid, findRotationMatrix, drawLine } from './functions.js'
 import Surface from './classes/Surface.js'
 
 const TRANSLATE = 0.05
@@ -17,12 +19,71 @@ const USER_LOCATION = new Vector(0, 0, 5)
 
 window.onload = () => {
 
-    const drawPyramids = (listOfPyramids) => {
+    const fillGlobalAEL = (globalTower, context) => {
+        globalTower.setTowerList.sort((item1, item2) => item1.ymin - item2.ymin)
+
+        let minimumY = Math.min.apply(Math, globalTower.setTowerList.map((brick) => brick.ymin))
+        let maximumY = Math.max.apply(Math, globalTower.setTowerList.map((brick) => brick.ymax))
+
+        globalTower.ael = globalTower.setTowerList.filter((brick) => brick.ymin === minimumY)
+
+        globalTower.ael.sort((item1, item2) => item1.xofymin - item2.xofymin)
+
+        for(let currentY=minimumY + 1; currentY <= maximumY; currentY++){
+            //Remove the expired bricks
+            globalTower.ael = globalTower.ael.filter((brick) => brick.ymax !== currentY)
+
+            //Update the xofymin of the bricks
+            for(let index = 0; index < globalTower.ael.length; index++){
+                let currentxofymin = globalTower.ael[index].xofymin
+                let dxdy = globalTower.ael[index].dxdy
+
+                globalTower.ael[index].setxofymin(currentxofymin + dxdy)
+            }
+
+            //Push new bricks
+            for(let newBrick of globalTower.setTowerList){
+                if(newBrick.ymin === currentY){
+                    globalTower.ael.push(newBrick)
+                }
+            }
+
+            //Sort the ael
+            globalTower.ael.sort((item1, item2) => item1.xofymin - item2.xofymin)
+
+            //Generate the flag table
+            if(currentY === minimumY + 20){
+                const sampleFlagTable = new FlagTable(globalTower.ael)
+                sampleFlagTable.generateTable()
+
+                console.table(sampleFlagTable.table)
+                for(let item of sampleFlagTable.bricksList){
+                    console.log(item)
+                }
+                
+            }
+        }
+
+    }
+
+    const drawPyramids = (listOfPyramids, globalTower) => {
+
+        //Clear the tower
+        globalTower.clearTower()
+
+        //Determine the front surfaces
         for(let pyramid of listOfPyramids){
             pyramid.determineFrontSurfaces(USER_LOCATION)
             pyramid.drawSolid(context)
             // pyramid.drawWireframe(context)
+
+            //Pushing the SETBricks for the current pyramid to the global SET tower
+            for(let brick of pyramid.getSetBricks()){
+                globalTower.pushSetBrick(brick)
+            }
         }
+
+        fillGlobalAEL(globalTower, context)
     }
 
     const mainCanvas = document.querySelector("#main-canvas")
@@ -35,6 +96,8 @@ window.onload = () => {
 
     mainCanvas.width = mainCanvas.offsetWidth
     mainCanvas.height = mainCanvas.offsetHeight
+
+    const globalTower = new SetTower()
 
     let pyramid1_v0 = new Point(-5, -1, 1)
     let pyramid1_v1 = new Point(-4, -1, -1)
@@ -71,8 +134,8 @@ window.onload = () => {
     let pyramid1_listOfSurfaces = [pyramid1_s0, pyramid1_s1, pyramid1_s2, pyramid1_s3]
     let pyramid2_listOfSurfaces = [pyramid2_s0, pyramid2_s1, pyramid2_s2, pyramid2_s3]
 
-    let pyramid1 = new Pyramid(mainCanvas, context, pyramid1_listOfVertices, pyramid_listOfEdges, pyramid1_listOfSurfaces)
-    let pyramid2 = new Pyramid(mainCanvas, context, pyramid2_listOfVertices, pyramid_listOfEdges, pyramid2_listOfSurfaces)
+    let pyramid1 = new Pyramid("Pyramid1", mainCanvas, context, pyramid1_listOfVertices, pyramid_listOfEdges, pyramid1_listOfSurfaces)
+    let pyramid2 = new Pyramid("Pyramid2", mainCanvas, context, pyramid2_listOfVertices, pyramid_listOfEdges, pyramid2_listOfSurfaces)
 
     let wt = new Matrix([[1, 0, 0, 0], 
                         [0, 1, 0, 0],
@@ -96,7 +159,7 @@ window.onload = () => {
 
     clearCanvas(context, mainCanvas)
 
-    drawPyramids([pyramid1, pyramid2])
+    drawPyramids([pyramid1, pyramid2], globalTower)
 
     window.addEventListener("keydown", (ev) => {
         const key = document.querySelector(`#button-${ev.key}`)
@@ -224,7 +287,7 @@ window.onload = () => {
 
                 }
 
-                drawPyramids([pyramid1, pyramid2])
+                drawPyramids([pyramid1, pyramid2], globalTower)
                 
                 break;
 
@@ -421,7 +484,7 @@ window.onload = () => {
 
                 }
 
-                drawPyramids([pyramid1, pyramid2])            
+                drawPyramids([pyramid1, pyramid2], globalTower)            
     
                 break;
 

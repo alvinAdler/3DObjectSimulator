@@ -1,5 +1,5 @@
 class SETBrick{
-    constructor(point1, point2, color="white"){
+    constructor(point1, point2, color="white", pyramidName="DefaultPyramid"){
         if(point1.y >= point2.y){
             this.ymax = point1.y
             this.ymin = point2.y
@@ -13,6 +13,11 @@ class SETBrick{
         this.dy = point2.y - point1.y
         this.dxdy = this.dx / this.dy
         this.brickColor = color
+
+        this.point1 = point1
+        this.point2 = point2
+
+        this.belongToPyramid = pyramidName
     }
 
     setxofymin(newXofymin){

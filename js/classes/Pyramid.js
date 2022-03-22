@@ -1,8 +1,8 @@
+import SETBrick from "./SETBrick.js"
 import { drawLine, transformPoint, findVector, findDotProduct, findCrossProduct, findCounterClockwiseVertices } from "../functions.js"
-import Vector from "./Vector.js"
 
 class Pyramid{
-    constructor(canvas, context, listOfVertices=[], listOfEdges=[], listOfSurfaces=[]){
+    constructor(pyramidName="DefaultPyramid", canvas, context, listOfVertices=[], listOfEdges=[], listOfSurfaces=[]){
 
         this.canvas = canvas
         this.context = context
@@ -19,6 +19,8 @@ class Pyramid{
         this.verticesScreen = []
 
         this.rot_deg = 1
+
+        this.pyramidName = pyramidName
     }
 
     addVerticesWorld(index, point){
@@ -106,6 +108,20 @@ class Pyramid{
                 drawLine(context, point1, point2, "white")
             }
         }
+    }
+
+    getSetBricks(){
+        const bricksHolder = []
+        for(let surface of this.frontSurfaces){
+            for(let edge of surface.edgeIndices){
+                let point1 = this.verticesScreen[this.edges[edge].indexStart]
+                let point2 = this.verticesScreen[this.edges[edge].indexEnd]
+
+                bricksHolder.push(new SETBrick(point1, point2, surface.surfColor, this.pyramidName))
+            }
+        }
+
+        return bricksHolder
     }
 
 }

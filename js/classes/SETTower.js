@@ -52,6 +52,10 @@ class SETTower{
             }
         }
     }
+
+    clearTower(){
+        this.setTowerList = []
+    }
 }
 
 export default SETTower
