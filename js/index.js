@@ -104,6 +104,10 @@ window.onload = () => {
         }
 
         fillGlobalAEL(globalTower, context)
+
+        for(let pyramid of listOfPyramids){
+            pyramid.drawWireframe(context)
+        }
     }
 
     const mainCanvas = document.querySelector("#main-canvas")
@@ -113,6 +117,8 @@ window.onload = () => {
 
     const devButton = document.querySelector("#dev-button")
     const verticesScreenButton = document.querySelector("#vertices-screen-button")
+    const xcoordinate = document.querySelector("#cursor-x")
+    const ycoordinate = document.querySelector("#cursor-y")
 
     mainCanvas.width = mainCanvas.offsetWidth
     mainCanvas.height = mainCanvas.offsetHeight
@@ -544,6 +550,11 @@ window.onload = () => {
 
         console.log("Pyramid2")
         console.log(pyramid2.verticesScreen)
+    })
+
+    mainCanvas.addEventListener("mousemove", (ev) => {
+        xcoordinate.textContent = ev.clientX - mainCanvas.getBoundingClientRect().left
+        ycoordinate.textContent = ev.clientY - mainCanvas.getBoundingClientRect().top
     })
 
     const handleChangeManipulation = (ev) => {
