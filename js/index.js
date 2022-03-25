@@ -80,6 +80,10 @@ window.onload = () => {
                 }
             }
 
+            if(Math.round(currentY) === 438){
+                console.log(globalTower.ael)
+            }
+
         }
 
     }
@@ -528,6 +532,20 @@ window.onload = () => {
         
         key.style.backgroundColor = "#EB4034"
         key.style.color = "white"
+        
+    })
+
+    window.addEventListener("keypress", (ev) => {
+        switch(ev.key){
+            case "1":
+                manipulationSelections[0].checked = true
+                manipulationMethod = "translation"
+                break;
+            case "2":
+                manipulationSelections[1].checked = true
+                manipulationMethod = "rotation"
+                break;
+        }
     })
 
     devButton.addEventListener("click", () => {
