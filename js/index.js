@@ -25,7 +25,7 @@ window.onload = () => {
         let minimumY = Math.min.apply(Math, globalTower.setTowerList.map((brick) => brick.ymin))
         let maximumY = Math.max.apply(Math, globalTower.setTowerList.map((brick) => brick.ymax))
 
-        globalTower.ael = globalTower.setTowerList.filter((brick) => brick.ymin === minimumY)
+        globalTower.ael = globalTower.setTowerList.filter((brick) => Math.round(brick.ymin) === Math.round(minimumY))
 
         globalTower.ael.sort((item1, item2) => item1.xofymin - item2.xofymin)
 
