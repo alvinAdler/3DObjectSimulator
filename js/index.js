@@ -30,8 +30,13 @@ window.onload = () => {
         globalTower.ael.sort((item1, item2) => item1.xofymin - item2.xofymin)
 
         for(let currentY=minimumY + 1; currentY <= maximumY; currentY++){
+
+            if(Math.round(currentY) === Math.round(maximumY)){
+                break
+            }
+
             //Remove the expired bricks
-            globalTower.ael = globalTower.ael.filter((brick) => brick.ymax !== currentY)
+            globalTower.ael = globalTower.ael.filter((brick) => Math.round(brick.ymax) !== Math.round(currentY))
 
             //Update the xofymin of the bricks
             for(let index = 0; index < globalTower.ael.length; index++){
@@ -43,45 +48,38 @@ window.onload = () => {
 
             //Push new bricks
             for(let newBrick of globalTower.setTowerList){
-                if(newBrick.ymin === currentY){
+                if((Math.round(newBrick.ymin) === Math.round(currentY)) && (Math.round(newBrick.ymin) !== Math.round(newBrick.ymax))){
                     globalTower.ael.push(newBrick)
                 }
             }
 
             //Sort the ael
             globalTower.ael.sort((item1, item2) => item1.xofymin - item2.xofymin)
-
             
-            // if(currentY === minimumY + 100){
-                //Generate the flag table
-                const sampleFlagTable = new FlagTable(globalTower.ael)
-                sampleFlagTable.generateTable()
+            //Generate the flag table
+            const sampleFlagTable = new FlagTable(globalTower.ael)
+            sampleFlagTable.generateTable()
 
-                const tableWidth = sampleFlagTable.table[Object.keys(sampleFlagTable.table)[0]].length
+            const tableWidth = sampleFlagTable.table[Object.keys(sampleFlagTable.table)[0]].length
 
-                //Process the spans based on the generated flag table
-                for(let flagIndex = 1; flagIndex < tableWidth; flagIndex++){
-                    let flagTrueHolder = []
-                    for(let flagKey of Object.keys(sampleFlagTable.table)){
-                        if(sampleFlagTable.table[flagKey][flagIndex] === true){
-                            flagTrueHolder.push(flagKey)
-                            continue
-                        }
-                    }
-
-                    // console.log(flagIndex)
-                    // console.log(flagTrueHolder)
-                    // console.log("===========================")
-
-                    if(flagTrueHolder.length === 1){
-                        let point1 = new Point(Math.round(globalTower.ael[flagIndex - 1].xofymin), currentY, 0)
-                        let point2 = new Point(Math.round(globalTower.ael[flagIndex].xofymin), currentY, 0)
-
-                        drawLine(context, point1, point2, flagTrueHolder[0])
+            //Process the spans based on the generated flag table
+            for(let flagIndex = 1; flagIndex < tableWidth - 1; flagIndex++){
+                let flagTrueHolder = []
+                for(let flagKey of Object.keys(sampleFlagTable.table)){
+                    if(sampleFlagTable.table[flagKey][flagIndex] === true){
+                        flagTrueHolder.push(flagKey)
+                        continue
                     }
                 }
-                
-            // }
+
+                if(flagTrueHolder.length === 1){
+                    let point1 = new Point(Math.round(globalTower.ael[flagIndex - 1].xofymin), currentY, 0)
+                    let point2 = new Point(Math.round(globalTower.ael[flagIndex].xofymin), currentY, 0)
+
+                    drawLine(context, point1, point2, flagTrueHolder[0])
+                }
+            }
+
         }
 
     }
@@ -105,9 +103,9 @@ window.onload = () => {
 
         fillGlobalAEL(globalTower, context)
 
-        for(let pyramid of listOfPyramids){
-            pyramid.drawWireframe(context)
-        }
+        // for(let pyramid of listOfPyramids){
+        //     pyramid.drawWireframe(context)
+        // }
     }
 
     const mainCanvas = document.querySelector("#main-canvas")
@@ -147,10 +145,10 @@ window.onload = () => {
     let pyramid1_s2 = new Surface([5, 3, 0], "green")
     let pyramid1_s3 = new Surface([3, 4, 2], "yellow")
 
-    let pyramid2_s0 = new Surface([0, 2, 1], "lightred")
+    let pyramid2_s0 = new Surface([0, 2, 1], "lightcoral")
     let pyramid2_s1 = new Surface([1, 4, 5], "lightblue")
     let pyramid2_s2 = new Surface([5, 3, 0], "lightgreen")
-    let pyramid2_s3 = new Surface([3, 4, 2], "lightyellow")
+    let pyramid2_s3 = new Surface([3, 4, 2], "lightgoldenrodyellow")
 
     let pyramid1_listOfVertices = [pyramid1_v0, pyramid1_v1, pyramid1_v2, pyramid1_v3]
     let pyramid2_listOfVertices = [pyramid2_v0, pyramid2_v1, pyramid2_v2, pyramid2_v3]

@@ -11,7 +11,13 @@ class SETBrick{
         }
         this.dx = point2.x - point1.x
         this.dy = point2.y - point1.y
-        this.dxdy = this.dx / this.dy
+
+        if(!isFinite(this.dx / this.dy)){
+            this.dxdy = this.dx
+        }else{
+            this.dxdy = this.dx / this.dy
+        }
+
         this.brickColor = color
 
         this.point1 = point1
