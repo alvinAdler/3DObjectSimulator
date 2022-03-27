@@ -29,61 +29,62 @@ window.onload = () => {
 
         globalTower.ael.sort((item1, item2) => item1.xofymin - item2.xofymin)
 
-        for(let currentY=minimumY + 1; currentY <= maximumY; currentY++){
+        try{
+            for(let currentY=minimumY+1; Math.round(currentY) < Math.round(maximumY); currentY++){
 
-            if(Math.round(currentY) === Math.round(maximumY)){
-                break
-            }
-
-            //Remove the expired bricks
-            globalTower.ael = globalTower.ael.filter((brick) => Math.round(brick.ymax) !== Math.round(currentY))
-
-            //Update the xofymin of the bricks
-            for(let index = 0; index < globalTower.ael.length; index++){
-                let currentxofymin = globalTower.ael[index].xofymin
-                let dxdy = globalTower.ael[index].dxdy
-
-                globalTower.ael[index].setxofymin(currentxofymin + dxdy)
-            }
-
-            //Push new bricks
-            for(let newBrick of globalTower.setTowerList){
-                if((Math.round(newBrick.ymin) === Math.round(currentY)) && (Math.round(newBrick.ymin) !== Math.round(newBrick.ymax))){
-                    globalTower.ael.push(newBrick)
+                //Remove the expired bricks
+                globalTower.ael = globalTower.ael.filter((brick) => (Math.round(brick.ymax) !== Math.round(currentY)) && brick.ymax !== brick.ymin)
+    
+                //Update the xofymin of the bricks
+                for(let index = 0; index < globalTower.ael.length; index++){
+                    let currentxofymin = globalTower.ael[index].xofymin
+                    let dxdy = globalTower.ael[index].dxdy
+    
+                    globalTower.ael[index].setxofymin(currentxofymin + dxdy)
                 }
-            }
-
-            //Sort the ael
-            globalTower.ael.sort((item1, item2) => item1.xofymin - item2.xofymin)
-            
-            //Generate the flag table
-            const sampleFlagTable = new FlagTable(globalTower.ael)
-            sampleFlagTable.generateTable()
-
-            const tableWidth = sampleFlagTable.table[Object.keys(sampleFlagTable.table)[0]].length
-
-            //Process the spans based on the generated flag table
-            for(let flagIndex = 1; flagIndex < tableWidth - 1; flagIndex++){
-                let flagTrueHolder = []
-                for(let flagKey of Object.keys(sampleFlagTable.table)){
-                    if(sampleFlagTable.table[flagKey][flagIndex] === true){
-                        flagTrueHolder.push(flagKey)
-                        continue
+    
+                //Push new bricks
+                for(let newBrick of globalTower.setTowerList){
+                    if((Math.round(newBrick.ymin) === Math.round(currentY)) && (Math.round(newBrick.ymin) !== Math.round(newBrick.ymax))){
+                        globalTower.ael.push(newBrick)
+                    }
+                }
+    
+                //Sort the ael
+                globalTower.ael.sort((item1, item2) => item1.xofymin - item2.xofymin)
+                
+                //Generate the flag table
+                const sampleFlagTable = new FlagTable(globalTower.ael)
+                sampleFlagTable.generateTable()
+    
+                const tableWidth = sampleFlagTable.table[Object.keys(sampleFlagTable.table)[0]].length
+    
+                //Process the spans based on the generated flag table
+                for(let flagIndex = 0; flagIndex < tableWidth - 1; flagIndex++){
+                    let flagTrueHolder = []
+                    for(let flagKey of Object.keys(sampleFlagTable.table)){
+                        if(sampleFlagTable.table[flagKey][flagIndex] === true){
+                            flagTrueHolder.push(flagKey)
+                            continue
+                        }
+                    }
+    
+                    if(flagTrueHolder.length === 1){
+                        let point1 = new Point(Math.round(globalTower.ael[flagIndex - 1].xofymin), currentY, 0)
+                        let point2 = new Point(Math.round(globalTower.ael[flagIndex].xofymin), currentY, 0)
+    
+                        drawLine(context, point1, point2, flagTrueHolder[0])
                     }
                 }
 
-                if(flagTrueHolder.length === 1){
-                    let point1 = new Point(Math.round(globalTower.ael[flagIndex - 1].xofymin), currentY, 0)
-                    let point2 = new Point(Math.round(globalTower.ael[flagIndex].xofymin), currentY, 0)
-
-                    drawLine(context, point1, point2, flagTrueHolder[0])
-                }
+                // globalTower.ael.filter((brick) => !(brick.ymax > currentY))
             }
-
-            if(Math.round(currentY) === 438){
-                console.log(globalTower.ael)
-            }
-
+        }
+        catch(err){
+            console.log(err)
+            console.log(globalTower)
+            console.log("===============================================")
+            console.log("===============================================")
         }
 
     }

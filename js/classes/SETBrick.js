@@ -13,7 +13,7 @@ class SETBrick{
         this.dy = point2.y - point1.y
 
         if(!isFinite(this.dx / this.dy)){
-            this.dxdy = this.dx
+            this.dxdy = 0
         }else{
             this.dxdy = this.dx / this.dy
         }
