@@ -5,7 +5,7 @@ class FlagTable{
 
         //Initialize every brick with false
         for(let brick of bricksList){
-            this.table[brick.brickColor] = [false]
+            this.table[brick.brickColor] = {brick: brick, content: [false]}
         }
     }
 
@@ -14,10 +14,10 @@ class FlagTable{
             // this.table[brick.brickColor].push(!lastBrickValue)
             for(let tableKey of Object.keys(this.table)){
                 if(tableKey === brick.brickColor){
-                    this.table[tableKey].push(!this.table[tableKey][this.table[tableKey].length - 1])
+                    this.table[tableKey].content.push(!this.table[tableKey].content[this.table[tableKey].content.length - 1])
                     continue
                 }
-                this.table[tableKey].push(this.table[tableKey][this.table[tableKey].length - 1])
+                this.table[tableKey].content.push(this.table[tableKey].content[this.table[tableKey].content.length - 1])
             }
         }
     }

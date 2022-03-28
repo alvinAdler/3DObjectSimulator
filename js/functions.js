@@ -144,3 +144,20 @@ export const findCounterClockwiseVertices = (edge1, edge2, edge3) => {
             return [0, 1, 2]
     }
 }
+
+export const sortAel = (ael) => {
+    let prevBrick;
+    for(let outterIndex = 0; outterIndex < ael.length - 1; outterIndex++){
+
+        for(let innerIndex = 0; innerIndex < ael.length - 1; innerIndex++){
+            if(ael[innerIndex].xofymin > ael[innerIndex + 1].xofymin){
+                [ael[innerIndex], ael[innerIndex + 1]] = [ael[innerIndex + 1], ael[innerIndex]]
+            }
+            if((ael[innerIndex].xofymin === ael[innerIndex + 1].xofymin) && prevBrick && ael[innerIndex + 1].brickColor === prevBrick.brickColor){
+                [ael[innerIndex], ael[innerIndex + 1]] = [ael[innerIndex + 1], ael[innerIndex]]
+            }
+
+            prevBrick = ael[innerIndex]
+        }
+    }
+}

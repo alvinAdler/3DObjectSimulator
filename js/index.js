@@ -6,7 +6,7 @@ import Vector from './classes/Vector.js'
 import SetTower from './classes/SETTower.js'
 import FlagTable from './classes/FlagTable.js'
 
-import { clearCanvas, findCos, findSin, findCentroid, findRotationMatrix, drawLine } from './functions.js'
+import { clearCanvas, findCos, findSin, findCentroid, findRotationMatrix, drawLine, sortAel } from './functions.js'
 import Surface from './classes/Surface.js'
 
 const TRANSLATE = 0.05
@@ -27,7 +27,7 @@ window.onload = () => {
 
         globalTower.ael = globalTower.setTowerList.filter((brick) => Math.round(brick.ymin) === Math.round(minimumY))
 
-        globalTower.ael.sort((item1, item2) => item1.xofymin - item2.xofymin)
+        sortAel(globalTower.ael)
 
         try{
             for(let currentY=minimumY+1; Math.round(currentY) < Math.round(maximumY); currentY++){
@@ -51,29 +51,54 @@ window.onload = () => {
                 }
     
                 //Sort the ael
-                globalTower.ael.sort((item1, item2) => item1.xofymin - item2.xofymin)
+                sortAel(globalTower.ael)
+
+                // if(currentY === minimumY + 1){
+                //     console.log("GlobalTower")
+                //     console.log(globalTower.ael)
+                // }
                 
                 //Generate the flag table
-                const sampleFlagTable = new FlagTable(globalTower.ael)
-                sampleFlagTable.generateTable()
-    
-                const tableWidth = sampleFlagTable.table[Object.keys(sampleFlagTable.table)[0]].length
-    
+                const flags = new FlagTable(globalTower.ael)
+                flags.generateTable()
+
+                const tableWidth = flags.table[Object.keys(flags.table)[0]].content.length
+
+                // if(currentY === minimumY + 1){
+                //     const finalObj = {}
+                //     for(let flagKey of Object.keys(flags.table)){
+                //         finalObj[flagKey] = flags.table[flagKey].content
+                //     }
+
+                //     console.table(finalObj)
+                //     console.log(globalTower.ael)
+                // }
+                
                 //Process the spans based on the generated flag table
                 for(let flagIndex = 0; flagIndex < tableWidth - 1; flagIndex++){
-                    let flagTrueHolder = []
-                    for(let flagKey of Object.keys(sampleFlagTable.table)){
-                        if(sampleFlagTable.table[flagKey][flagIndex] === true){
-                            flagTrueHolder.push(flagKey)
+                    let activeFlag = []
+                    let brickHolder = []
+
+                    for(let flagKey of Object.keys(flags.table)){
+                        if(flags.table[flagKey].content[flagIndex]){
+                            activeFlag.push(flagKey)
+                            brickHolder.push(flags.table[flagKey])
                             continue
                         }
                     }
     
-                    if(flagTrueHolder.length === 1){
+                    if(brickHolder.length === 1){
                         let point1 = new Point(Math.round(globalTower.ael[flagIndex - 1].xofymin), currentY, 0)
                         let point2 = new Point(Math.round(globalTower.ael[flagIndex].xofymin), currentY, 0)
     
-                        drawLine(context, point1, point2, flagTrueHolder[0])
+                        drawLine(context, point1, point2, brickHolder[0].brick.brickColor)
+                    }
+                    else if(brickHolder.length === 2){
+
+                        let brick1 = brickHolder[0]
+                        let brick2 = brickHolder[1]
+
+                        let isIntersecting = !(brick1.brick.point1.z > brick2.brick.point1.z) && (brick1.brick.point2.z > brick2.brick.point2.z)
                     }
                 }
 
