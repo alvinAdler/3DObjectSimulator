@@ -107,8 +107,8 @@ window.onload = () => {
                             console.log("I am intersecting something")
                         }
                         else{
-                            let point1 = new Point(Math.round(brick1.brick.xofymin), Math.round(currentY), 0)
-                            let point2 = new Point(Math.round(brick2.brick.xofymin), Math.round(currentY), 0)
+                            let point1 = new Point(Math.round(globalTower.ael[flagIndex - 1].xofymin), Math.round(currentY), 0)
+                            let point2 = new Point(Math.round(globalTower.ael[flagIndex].xofymin), Math.round(currentY), 0)
 
                             drawLine(context, point1, point2, action.color)
                         }
