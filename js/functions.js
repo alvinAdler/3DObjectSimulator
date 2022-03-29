@@ -43,6 +43,8 @@ export const drawLine = (context, point1, point2, color="white") => {
     context.beginPath()
 
     context.strokeStyle = color
+    context.lineWidth = 2
+    context.globalAlpha = 1
 
     context.moveTo(point1.x, point1.y)
     context.lineTo(point2.x, point2.y)

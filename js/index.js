@@ -29,6 +29,9 @@ window.onload = () => {
 
         sortAel(globalTower.ael)
 
+        // console.log(minimumY)
+        // console.log(maximumY)
+
         try{
             for(let currentY=minimumY+1; Math.round(currentY) < Math.round(maximumY); currentY++){
 
@@ -49,30 +52,21 @@ window.onload = () => {
                         globalTower.ael.push(newBrick)
                     }
                 }
+
+                if(globalTower.ael.length === 0){
+                    continue
+                }
     
                 //Sort the ael
                 sortAel(globalTower.ael)
-
-                // if(currentY === minimumY + 1){
-                //     console.log("GlobalTower")
-                //     console.log(globalTower.ael)
-                // }
                 
                 //Generate the flag table
                 const flags = new FlagTable(globalTower.ael)
                 flags.generateTable()
 
+                // console.log(flags)
+
                 const tableWidth = flags.table[Object.keys(flags.table)[0]].content.length
-
-                // if(currentY === minimumY + 1){
-                //     const finalObj = {}
-                //     for(let flagKey of Object.keys(flags.table)){
-                //         finalObj[flagKey] = flags.table[flagKey].content
-                //     }
-
-                //     console.table(finalObj)
-                //     console.log(globalTower.ael)
-                // }
                 
                 //Process the spans based on the generated flag table
                 for(let flagIndex = 0; flagIndex < tableWidth - 1; flagIndex++){
@@ -88,8 +82,8 @@ window.onload = () => {
                     }
     
                     if(brickHolder.length === 1){
-                        let point1 = new Point(Math.round(globalTower.ael[flagIndex - 1].xofymin), currentY, 0)
-                        let point2 = new Point(Math.round(globalTower.ael[flagIndex].xofymin), currentY, 0)
+                        let point1 = new Point(Math.round(globalTower.ael[flagIndex - 1].xofymin), Math.round(currentY), 0)
+                        let point2 = new Point(Math.round(globalTower.ael[flagIndex].xofymin), Math.round(currentY), 0)
     
                         drawLine(context, point1, point2, brickHolder[0].brick.brickColor)
                     }
@@ -97,8 +91,30 @@ window.onload = () => {
 
                         let brick1 = brickHolder[0]
                         let brick2 = brickHolder[1]
+                        let action = {isIntersecting: false, color: ""}
 
-                        let isIntersecting = !(brick1.brick.point1.z > brick2.brick.point1.z) && (brick1.brick.point2.z > brick2.brick.point2.z)
+                        if((brick1.brick.point1.z >= brick2.brick.point1.z) && (brick1.brick.point2.z >= brick2.brick.point2.z)){
+                            action.color = brick1.brick.brickColor
+                        }
+                        else if((brick2.brick.point1.z >= brick1.brick.point1.z) && (brick2.brick.point2.z >= brick1.brick.point2.z)){
+                            action.color = brick2.brick.brickColor
+                        }
+                        else{
+                            action.isIntersecting = true
+                        }
+
+                        if(action.isIntersecting){
+                            console.log("I am intersecting something")
+                        }
+                        else{
+                            let point1 = new Point(Math.round(brick1.brick.xofymin), Math.round(currentY), 0)
+                            let point2 = new Point(Math.round(brick2.brick.xofymin), Math.round(currentY), 0)
+
+                            drawLine(context, point1, point2, action.color)
+                        }
+                    }
+                    else if(brickHolder.length > 2){
+                        console.log("More than 2")
                     }
                 }
 
@@ -122,7 +138,7 @@ window.onload = () => {
         //Determine the front surfaces
         for(let pyramid of listOfPyramids){
             pyramid.determineFrontSurfaces(USER_LOCATION)
-            pyramid.drawSolid(context)
+            // pyramid.drawSolid(context)
             // pyramid.drawWireframe(context)
 
             //Pushing the SETBricks for the current pyramid to the global SET tower
