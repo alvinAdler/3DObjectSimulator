@@ -6,8 +6,9 @@ import Vector from './classes/Vector.js'
 import SetTower from './classes/SETTower.js'
 import FlagTable from './classes/FlagTable.js'
 
-import { clearCanvas, findCos, findSin, findCentroid, findRotationMatrix, drawLine, sortAel } from './functions.js'
+import { clearCanvas, findCos, findSin, findCentroid, findRotationMatrix, drawLine, sortAel, isBrickIntersecting, findIntersectionX } from './functions.js'
 import Surface from './classes/Surface.js'
+import PlaneEquation from './classes/PlaneEquation.js'
 
 const TRANSLATE = 0.05
 
@@ -19,7 +20,7 @@ const USER_LOCATION = new Vector(0, 0, 5)
 
 window.onload = () => {
 
-    const fillGlobalAEL = (globalTower, context) => {
+    const fillGlobalAEL = (globalTower, context, listOfPyramids) => {
         globalTower.setTowerList.sort((item1, item2) => item1.ymin - item2.ymin)
 
         let minimumY = Math.min.apply(Math, globalTower.setTowerList.map((brick) => brick.ymin))
@@ -28,9 +29,6 @@ window.onload = () => {
         globalTower.ael = globalTower.setTowerList.filter((brick) => Math.round(brick.ymin) === Math.round(minimumY))
 
         sortAel(globalTower.ael)
-
-        // console.log(minimumY)
-        // console.log(maximumY)
 
         try{
             for(let currentY=minimumY+1; Math.round(currentY) < Math.round(maximumY); currentY++){
@@ -91,20 +89,45 @@ window.onload = () => {
 
                         let brick1 = brickHolder[0]
                         let brick2 = brickHolder[1]
-                        let action = {isIntersecting: false, color: ""}
+                        let action = isBrickIntersecting(brick1, brick2)
 
-                        if((brick1.brick.point1.z >= brick2.brick.point1.z) && (brick1.brick.point2.z >= brick2.brick.point2.z)){
-                            action.color = brick1.brick.brickColor
-                        }
-                        else if((brick2.brick.point1.z >= brick1.brick.point1.z) && (brick2.brick.point2.z >= brick1.brick.point2.z)){
-                            action.color = brick2.brick.brickColor
-                        }
-                        else{
-                            action.isIntersecting = true
+                        const pyramidsHolder = {
+                            "Pyramid1": listOfPyramids[0],
+                            "Pyramid2": listOfPyramids[1]
                         }
 
                         if(action.isIntersecting){
-                            console.log("I am intersecting something")
+                            let planeEquation1 = undefined
+                            let planeEquation2 = undefined
+
+                            let currentPyramid = pyramidsHolder[brick1.brick.belongToPyramid]
+
+                            //Finding the surface of brick1
+                            for(let surface of currentPyramid.frontSurfaces){
+                                if(surface.surfColor === brick1.brick.brickColor){
+                                    //Getting the plane equation of that surface
+                                    planeEquation1 = surface.planeEquation
+                                }
+                            }
+
+                            currentPyramid = pyramidsHolder[brick2.brick.belongToPyramid]
+
+                            //Finding the surface of brick2
+                            for(let surface of currentPyramid.frontSurfaces){
+                                if(surface.surfColor === brick2.brick.brickColor){
+                                    //Getting the plane equation of that surface
+                                    planeEquation2= surface.planeEquation
+                                }
+                            }
+
+                            let interSectionX = findIntersectionX(planeEquation1, planeEquation2, currentY)
+
+                            let point1 = new Point(Math.round(globalTower.ael[flagIndex - 1].xofymin), Math.round(currentY), 0)
+                            let point2 = new Point(Math.round(interSectionX), Math.round(currentY), 0)
+                            let point3 = new Point(Math.round(globalTower.ael[flagIndex].xofymin), Math.round(currentY), 0)
+
+                            drawLine(context, point1, point2, brick1.brick.brickColor)
+                            drawLine(context, point2, point3, brick2.brick.brickColor)
                         }
                         else{
                             let point1 = new Point(Math.round(globalTower.ael[flagIndex - 1].xofymin), Math.round(currentY), 0)
@@ -147,7 +170,7 @@ window.onload = () => {
             }
         }
 
-        fillGlobalAEL(globalTower, context)
+        fillGlobalAEL(globalTower, context, listOfPyramids)
 
         // for(let pyramid of listOfPyramids){
         //     pyramid.drawWireframe(context)
@@ -161,6 +184,7 @@ window.onload = () => {
 
     const devButton = document.querySelector("#dev-button")
     const verticesScreenButton = document.querySelector("#vertices-screen-button")
+    const pyramidsButton = document.querySelector("#pyramids-button")
     const xcoordinate = document.querySelector("#cursor-x")
     const ycoordinate = document.querySelector("#cursor-y")
 
@@ -608,6 +632,16 @@ window.onload = () => {
 
         console.log("Pyramid2")
         console.log(pyramid2.verticesScreen)
+    })
+
+    pyramidsButton.addEventListener("click", () => {
+        console.log("Pyramid1")
+        console.log(pyramid1)
+
+        console.log("========================")
+
+        console.log("Pyramid2")
+        console.log(pyramid2)
     })
 
     mainCanvas.addEventListener("mousemove", (ev) => {

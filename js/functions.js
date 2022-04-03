@@ -163,3 +163,53 @@ export const sortAel = (ael) => {
         }
     }
 }
+
+export const isBrickIntersecting = (brick1, brick2) => {
+    let action = {isIntersecting: false, color: ""}
+
+    if((brick1.brick.point1.z >= brick2.brick.point1.z) && (brick1.brick.point2.z >= brick2.brick.point2.z)){
+        action.color = brick1.brick.brickColor
+    }
+    else if((brick2.brick.point1.z >= brick1.brick.point1.z) && (brick2.brick.point2.z >= brick1.brick.point2.z)){
+        action.color = brick2.brick.brickColor
+    }
+    else{
+        action.isIntersecting = true
+    }
+
+    return action
+}
+
+export const findIntersectionX = (planeEquation1, planeEquation2, currentY) => {
+    const m1 = -(planeEquation1.B * currentY) - planeEquation1.D
+    const m2 = -(planeEquation2.B * currentY) - planeEquation2.D
+
+    //Performing elimination process
+    const newPlane1 = {
+        A: planeEquation2.C * planeEquation1.A,
+        C: planeEquation2.C * planeEquation1.C,
+        M: m1 * planeEquation2.C
+    }
+
+    const newPlane2 = {
+        A: planeEquation1.C * planeEquation2.A,
+        C: planeEquation1.C * planeEquation2.C,
+        M: m2 * planeEquation1.C
+    }
+
+    let resultM, resultA
+
+    //Determining the elimination sign
+    if(newPlane1.C < 0 || newPlane2.C < 0){
+        //Take addition elimination method
+        resultM = newPlane1.M + newPlane2.M
+        resultA = newPlane1.A + newPlane2.A
+    }
+    else{
+        //Take subtraction elimination method
+        resultM = newPlane1.M - newPlane2.M
+        resultA = newPlane1.A - newPlane2.A
+    }
+
+    return resultM / resultA
+}

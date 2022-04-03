@@ -1,6 +1,7 @@
 import Point from './classes/Point.js'
+import PlaneEquation from './classes/PlaneEquation.js'
 
-import { drawLine } from './functions.js'
+import { drawLine, findIntersectionX } from './functions.js'
 
 window.onload = () => {
     const drawLinesButton = document.querySelector("#draw-lines")
@@ -11,18 +12,14 @@ window.onload = () => {
     canvas.width = canvas.offsetWidth
     canvas.height = canvas.offsetHeight
 
-    let point1 = new Point(100, 100, 0)
-    let point2 = new Point(300, 100, 0)
+    const point1 = new Point(10, 0, -40)
+    const point2 = new Point(15, 10, -15)
 
-    let point3 = new Point(400, 100, 0)
-    let point4 = new Point(600, 300, 0)
+    const planeEquation1 = new PlaneEquation(-900, 0, 600, point1)
+    const planeEquation2 = new PlaneEquation(250, -75, 100, point2)
 
-    drawLine(context, point1, point2, "red")
-    drawLine(context, point3, point4, "blue")    
+    const intersectionX = findIntersectionX(planeEquation1, planeEquation2, 12)
 
-    drawLinesButton.addEventListener("click", () => {
-        drawLine(context, point1, point2, "red")
-        drawLine(context, point3, point4, "blue")
-    })
+    console.log(`The intersection is: ${intersectionX}`)
     
 }
