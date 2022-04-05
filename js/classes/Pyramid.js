@@ -92,6 +92,9 @@ class Pyramid{
 
             let surfaceNormal = findCrossProduct(vector1, vector2)
 
+            surface.setSurfaceNormal(surfaceNormal)
+            surface.setPlaneEquation(point1)
+
             let dotProductResult = findDotProduct(userLocation, surfaceNormal)
 
             if(dotProductResult < 0){
