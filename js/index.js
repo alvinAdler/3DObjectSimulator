@@ -161,8 +161,7 @@ window.onload = () => {
         //Determine the front surfaces
         for(let pyramid of listOfPyramids){
             pyramid.determineFrontSurfaces(USER_LOCATION)
-            // pyramid.drawSolid(context)
-            // pyramid.drawWireframe(context)
+            pyramid.drawSolid(context)
 
             //Pushing the SETBricks for the current pyramid to the global SET tower
             for(let brick of pyramid.getSetBricks()){
@@ -170,11 +169,7 @@ window.onload = () => {
             }
         }
 
-        fillGlobalAEL(globalTower, context, listOfPyramids)
-
-        // for(let pyramid of listOfPyramids){
-        //     pyramid.drawWireframe(context)
-        // }
+        // fillGlobalAEL(globalTower, context, listOfPyramids)
     }
 
     const mainCanvas = document.querySelector("#main-canvas")
