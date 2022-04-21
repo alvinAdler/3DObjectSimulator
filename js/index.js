@@ -6,7 +6,7 @@ import Vector from './classes/Vector.js'
 import SetTower from './classes/SETTower.js'
 import FlagTable from './classes/FlagTable.js'
 
-import { clearCanvas, findCos, findSin, findCentroid, findRotationMatrix, drawLine, sortAel, isBrickIntersecting, findIntersectionX } from './functions.js'
+import { clearCanvas, findCos, findSin, findCentroid, findRotationMatrix, drawLine, sortAel, isBrickIntersecting, findIntersectionX, findSt } from './functions.js'
 import Surface from './classes/Surface.js'
 import PlaneEquation from './classes/PlaneEquation.js'
 
@@ -17,6 +17,8 @@ const ROT_DEG = 1
 const CONTROLLER_KEYS = ["a", "w", "s", "d", "q", "e", "j", "i", "k", "l", "u", "o"]
 
 const USER_LOCATION = new Vector(0, 0, 5)
+
+const WORLD_SIZE = {width: 16, height: 8}
 
 window.onload = () => {
 
@@ -177,12 +179,6 @@ window.onload = () => {
     let manipulationSelections = document.querySelectorAll("input[name='manipulation-method']")
     let manipulationMethod = document.querySelector("input[name='manipulation-method']:checked").value
 
-    const devButton = document.querySelector("#dev-button")
-    const verticesScreenButton = document.querySelector("#vertices-screen-button")
-    const pyramidsButton = document.querySelector("#pyramids-button")
-    const xcoordinate = document.querySelector("#cursor-x")
-    const ycoordinate = document.querySelector("#cursor-y")
-
     mainCanvas.width = mainCanvas.offsetWidth
     mainCanvas.height = mainCanvas.offsetHeight
 
@@ -235,12 +231,8 @@ window.onload = () => {
                         [0, 1, 0, 0],
                         [0, 0, 1, -1/USER_LOCATION.z],
                         [0, 0, 0, 1]])
-
                         
-    let st = new Matrix([[87.5, 0, 0, 0],
-                        [0, -87.5, 0, 0],
-                        [0, 0, 87.5, 0],
-                        [700, 350, 0, 1]])
+    let st = findSt(WORLD_SIZE.width, WORLD_SIZE.height, mainCanvas.width, mainCanvas.height)
 
     
     pyramid1.initPyramid(wt, vt, st)
@@ -607,41 +599,6 @@ window.onload = () => {
                 manipulationMethod = "rotation"
                 break;
         }
-    })
-
-    devButton.addEventListener("click", () => {
-        const buttonsHolder = document.querySelector(".dev-action-buttons")
-
-        if(window.getComputedStyle(buttonsHolder).display === "none"){
-            buttonsHolder.style.display = "flex"
-        }else{
-            buttonsHolder.style.display = "none"
-        }
-    })
-
-    verticesScreenButton.addEventListener("click", () => {
-        console.log("Pyramid1")
-        console.log(pyramid1.verticesScreen)
-
-        console.log("========================")
-
-        console.log("Pyramid2")
-        console.log(pyramid2.verticesScreen)
-    })
-
-    pyramidsButton.addEventListener("click", () => {
-        console.log("Pyramid1")
-        console.log(pyramid1)
-
-        console.log("========================")
-
-        console.log("Pyramid2")
-        console.log(pyramid2)
-    })
-
-    mainCanvas.addEventListener("mousemove", (ev) => {
-        xcoordinate.textContent = ev.clientX - mainCanvas.getBoundingClientRect().left
-        ycoordinate.textContent = ev.clientY - mainCanvas.getBoundingClientRect().top
     })
 
     const handleChangeManipulation = (ev) => {

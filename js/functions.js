@@ -213,3 +213,28 @@ export const findIntersectionX = (planeEquation1, planeEquation2, currentY) => {
 
     return resultM / resultA
 }
+
+export const findSt = (worldWidth, worldHeight, canvasWidth, canvasHeight) => {
+    const worldPoint2 = new Point(0, worldHeight / 2, 0)
+    const worldPoint3 = new Point(worldWidth / 2, -(worldHeight / 2), 0)
+
+    const canvasPoint1 = new Point(canvasWidth / 2, canvasHeight / 2, 0)
+    const canvasPoint2 = new Point(canvasWidth / 2, 0, 0)
+    const canvasPoint3 = new Point(canvasWidth, canvasHeight, 0)
+
+    const d = canvasPoint1.x
+    const h = canvasPoint1.y
+
+    const b = (canvasPoint2.x - d) / worldPoint2.y
+    const f = (canvasPoint2.y - h) / worldPoint2.y
+
+    const a = (canvasPoint3.x - ((worldPoint3.y * b) + d)) / worldPoint3.x
+    const e = (canvasPoint3.y - ((worldPoint3.y * f) + h)) / worldPoint3.y
+
+    return new Matrix([
+        [a, e, 0, 0],
+        [b, f, 0, 0],
+        [0, 0, a, 0],
+        [d, h, 0, 1]
+    ])
+}
