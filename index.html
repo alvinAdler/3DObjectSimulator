@@ -9,7 +9,7 @@
     <title>3D Object Manipulator</title>
 </head>
 <body>
-	<div class="main-container">
+	<div class="main-container container">
 		<h1>3D Object Simulator</h1>
 		<canvas id="main-canvas"></canvas>
 
@@ -19,6 +19,9 @@
 
 			<input type="radio" name="manipulation-method" id="manipulation-rotation" value="rotation">
 			<label for="manipulation-rotation">Rotate</label>
+
+			<input type="checkbox" name="render-color" id="render-color-checkbox">
+			<label for="render-color-checkbox">Render Color (Beta)</label>
 		</div>
 
 		<div class="main-controller">
@@ -45,4 +48,5 @@
 	</div>
 </body>
 <script type="module" src="js/index.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </html>

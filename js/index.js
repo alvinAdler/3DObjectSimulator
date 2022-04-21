@@ -155,7 +155,7 @@ window.onload = () => {
 
     }
 
-    const drawPyramids = (listOfPyramids, globalTower) => {
+    const drawPyramids = (listOfPyramids, globalTower, willRenderColor=false) => {
 
         //Clear the tower
         globalTower.clearTower()
@@ -171,13 +171,18 @@ window.onload = () => {
             }
         }
 
-        // fillGlobalAEL(globalTower, context, listOfPyramids)
+        if(willRenderColor){
+            fillGlobalAEL(globalTower, context, listOfPyramids)
+        }
     }
 
     const mainCanvas = document.querySelector("#main-canvas")
     const context = mainCanvas.getContext("2d")
+    const colorRenderCheckbox = document.querySelector("#render-color-checkbox")
+
     let manipulationSelections = document.querySelectorAll("input[name='manipulation-method']")
     let manipulationMethod = document.querySelector("input[name='manipulation-method']:checked").value
+    let willRenderColor = false
 
     mainCanvas.width = mainCanvas.offsetWidth
     mainCanvas.height = mainCanvas.offsetHeight
@@ -240,7 +245,9 @@ window.onload = () => {
 
     clearCanvas(context, mainCanvas)
 
-    drawPyramids([pyramid1, pyramid2], globalTower)
+    drawPyramids([pyramid1, pyramid2], globalTower, willRenderColor)
+
+    swal("Welcome!", "Use your keyboard to move the objects")
 
     window.addEventListener("keydown", (ev) => {
         const key = document.querySelector(`#button-${ev.key}`)
@@ -368,7 +375,7 @@ window.onload = () => {
 
                 }
 
-                drawPyramids([pyramid1, pyramid2], globalTower)
+                drawPyramids([pyramid1, pyramid2], globalTower, willRenderColor)
                 
                 break;
 
@@ -565,7 +572,7 @@ window.onload = () => {
 
                 }
 
-                drawPyramids([pyramid1, pyramid2], globalTower)            
+                drawPyramids([pyramid1, pyramid2], globalTower, willRenderColor)            
     
                 break;
 
@@ -599,6 +606,12 @@ window.onload = () => {
                 manipulationMethod = "rotation"
                 break;
         }
+    })
+
+    colorRenderCheckbox.addEventListener("change", (ev) => {
+        willRenderColor = !willRenderColor
+        clearCanvas(context, mainCanvas)
+        drawPyramids([pyramid1, pyramid2], globalTower, willRenderColor)
     })
 
     const handleChangeManipulation = (ev) => {

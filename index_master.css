@@ -14,20 +14,26 @@ html{
 body{
     width: 100%;
     height: 100%;
+    background-color: #f2f2f2;
 }
 
 .main-container{
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
-    gap: 1.5rem 0;
+    gap: 1rem 0;
     height: 100%;
-    margin: 0 10rem;
-    border: 3px solid blue;
+    /* border: 3px solid red; */
 }
 
 .main-container > h1{
     margin-top: 2rem;
+    text-align: center;
+    border: 3px solid red;
+    padding: 1rem;
+    color: white;
+    background-color: #EB4034;
+    clip-path: polygon(0% 10%, 100% 0%, 100% 90%, 0% 100%);
 }
 
 .main-controller{
@@ -36,30 +42,29 @@ body{
     flex-flow: row wrap;
     justify-content: center;
     align-items: center;
-    gap: 0 3rem;
-    border: 3px solid red;
+    gap: 1.5rem;
 }
 
 .object-controller{
     background-color: #C2C2C280;
     text-align: center;
     display: grid;
-    grid-template-rows: repeat(4, 1fr);
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, 1fr);
+    grid-auto-rows: 1fr;
     padding: 1rem;
-    width: 15%;
+    width: 200px;
     gap: 0.15rem;
-    box-shadow: 2px 5px 10px 0 #2b2b2b;
+    /* box-shadow: 2px 5px 10px 0 #2b2b2b; */
+    margin: 0;
+    border-radius: 10px;
 }
 
 .object-controller > p{
     grid-column: 1 / 5;
     margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-size: 1.25rem;
     font-weight: bold;
+    text-align: center;
 }
 
 .controller-button{
@@ -136,28 +141,9 @@ body{
     row-gap: 0.5rem;
 }
 
-#manipulation-translation::after,
-#manipulation-rotation::after{
-    content: "";
-    position: relative;
-}
-
-#manipulation-translation:checked::after,
-#manipulation-rotation:checked::after{
-    content: "";
-    width: 8px;
-    height: 8px;
-    background-color: #EB4034;
-    position: relative;
-    border-radius: 50%;
-    display: inline-block;
-    bottom: 8.4px;
-    left: 2px;
-}
-
 #main-canvas{
     border: 2px solid black;
     width: 100%;
-    height: 700px;
+    height: 600px;
     background-color: black;
 }
